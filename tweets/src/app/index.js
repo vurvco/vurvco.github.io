@@ -68,10 +68,10 @@ function setDOM() {
 		li.setAttribute('data-fav-plus', _GLOBAL.previousFavsPlus.indexOf(tweetRowNum) > -1);
 		li.setAttribute('data-id', tweet[8]);
 		content.appendChild(li);
-		li.innerHTML = '<h1>' + tweet[1] + '</h1>'
-			+ '<h2>@' + tweet[10] + '</h2>'
-			+ '<p>' + tweet[4] + '</p>'
-			+ (tweet[5] && '<img src="' + tweet[5] + '"/>')
+		li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
+			+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
+			+ '<p>' + tweet[TEXT_INDEX] + '</p>'
+			+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX] + '"/>')
 			+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
 
 		if (i === _GLOBAL.tweets.length - 1) {

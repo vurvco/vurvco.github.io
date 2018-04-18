@@ -25,6 +25,7 @@ h1 {
 	text-align: center;
 	font-weight: 400;
 	font-size: 1.3rem;
+	color: #fff;
 }
 h2 {
 	font-size: 1rem;
@@ -85,7 +86,7 @@ button:hover {
 }
 #instructions {
 	display: none;
-	background: #BBDEFB;
+	background: #dbefff;
 	padding: 10px 20px 10px 25px;
 	position: relative;
 	margin: 0 0 1rem 0;
@@ -117,6 +118,12 @@ main page
 }
 .topic-env:hover {
 	background: #00897B;
+}
+.topic-test {
+	background: #3F51B5;
+}
+.topic-test:hover {
+	background: #3949AB;
 }
 #topics {
 	text-align: center;
@@ -175,14 +182,15 @@ header
 */
 header {
 	position: relative;
-	height: 60px;
+	height: 4rem;
 	padding: 10px 0 0 0;
-	background: #81D4FA;
+	background: #fb8378;
 }
 .home-link {
 	position: absolute;
 	left: 10px;
 	top: 15px;
+	color: #fff;
 }
 
 /*
