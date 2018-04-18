@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>vurv tweet eval</title>
+    <meta charset='utf-8' />    
+    <link rel="stylesheet" type="text/css" href="./src/css/main.css" />    
+    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500" rel="stylesheet">
+    <link rel="shortcut icon" href="http://www.vurv.co/wp-content/uploads/2017/04/vurv-favicon-1.png">
+    <meta name="google-signin-client_id" content="862223329657-bar3022h3fnatd79fqdij5id486r41ee.apps.googleusercontent.com">
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </head>
+
+  <body>
+
+    <div id='main'>
+      <div id='loading'>
+        <img src="./src/img/loading.svg" alt="..." />
+      </div>
+
+      <div id='content'>
+        <div id='topics' style='display:none'>
+          choose a topic to evaluate
+          <a class='topic topic-env' href="./environment-test.html">
+              environment — test
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+        <div id="authorize-button" class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div>
+          <button id="signout-button" class="btn-auth link">Sign Out</button>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+      var SPREADSHEET_ID = false;
+    </script>
+
+    <script type="text/javascript" src="./src/app/index.js"></script>
+    <script type="text/javascript" src='./src/app/init.js'></script>
+
+    <script async defer src="https://apis.google.com/js/api.js"
+      onload="this.onload=function(){};handleClientLoad()"
+      onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+  </body>
+</html>
