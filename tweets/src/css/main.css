@@ -1,6 +1,7 @@
 * {
 	box-sizing: border-box;
-	font-family: 'Quicksand', sans-serif;
+	font-family: 'Helvetica', sans-serif;
+	font-weight: 100;
 	margin: 0;
 	line-height: 1.8em;
 	color: #455A64;
@@ -21,14 +22,20 @@ body.not-auth footer {
 	bottom: auto;
 }
 h1 {
-	font-size: 1rem;
-	margin: 0 10px 0 0;
-	display: inline-block;
+	text-align: center;
+	font-weight: 400;
+	font-size: 1.3rem;
 }
 h2 {
+	font-size: 1rem;
+	margin: 0 10px 0 0;
+	font-weight: 400;
+	display: inline-block;
+}
+h3 {
 	margin: 0;
 	font-size: 0.8rem;
-	font-weight: normal;
+	font-weight: 400;
 	display: inline-block;`
 	color: #78909C;
 }
@@ -81,7 +88,7 @@ button:hover {
 	background: #BBDEFB;
 	padding: 10px 20px 10px 25px;
 	position: relative;
-	margin: 1rem 0;
+	margin: 0 0 1rem 0;
 	font-weight: bold;
 }
 #instructions p {
@@ -163,6 +170,20 @@ tweet cards
 	display: none;
 	margin: 80px auto;
 }
+/*
+header
+*/
+header {
+	position: relative;
+	height: 60px;
+	padding: 10px 0 0 0;
+	background: #81D4FA;
+}
+.home-link {
+	position: absolute;
+	left: 10px;
+	top: 15px;
+}
 
 /*
 footer 
@@ -173,9 +194,6 @@ footer {
 	margin-top: -150px;
 	height: 150px;
 	text-align: center;
-}
-footer .home-link {
-	margin-bottom: 20px;
 }
 footer .btn-auth {
 	font-size: 0.8rem;

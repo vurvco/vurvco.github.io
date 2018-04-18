@@ -56,7 +56,7 @@ function checkLogIn() {
           _GLOBAL.init = true;
           updateSigninStatus(isSignedIn);
         } else {
-          checkLogIn();
+          handlePageError('Could not authenticate')
         }
       }
     }, 5000);

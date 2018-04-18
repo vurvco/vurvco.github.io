@@ -4,7 +4,6 @@
     <title>vurv tweet eval</title>
     <meta charset='utf-8' />    
     <link rel="stylesheet" type="text/css" href="./src/css/main.css" />
-    <link href="https://fonts.googleapis.com/css?family=Quicksand:400,500" rel="stylesheet">
     <link rel="shortcut icon" href="http://www.vurv.co/wp-content/uploads/2017/04/vurv-favicon-1.png">
     <meta name="google-signin-client_id" content="862223329657-bar3022h3fnatd79fqdij5id486r41ee.apps.googleusercontent.com">
 
@@ -13,6 +12,15 @@
   <body>
 
     <div id='main'>
+      <header>
+          <h1>
+              environment (misc)
+          </h1>
+        
+          <a class='home-link link' href='/'>
+              &#x1F3E0; Home
+          </a>
+      </header>
       <div id='loading'>
         <img src="./src/img/loading.svg" alt="..." />
       </div>
@@ -37,11 +45,6 @@
     </div>
 
     <footer>
-        <div>
-          <a class='home-link link' href='/'>
-              &#x1F3E0; Home
-          </a>
-        </div>
         <div id="authorize-button" class="g-signin2" data-onsuccess="onSignIn"></div>
         <div>
           <button id="signout-button" class="btn-auth link">Sign Out</button>
@@ -50,6 +53,10 @@
 
     <script type="text/javascript">
       var SPREADSHEET_ID = '1uUTJdH5EqO3zejeMvCfjdf3MYQJ6qnmiwqdmdYNXLVg';
+      var TEXT_INDEX = 4;
+      var MEDIA_INDEX = 5;
+      var HANDLE_INDEX = 10;
+      var NAME_INDEX = 1;
     </script>
 
     <script type="text/javascript" src="./src/app/index.js"></script>
