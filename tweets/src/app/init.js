@@ -49,14 +49,14 @@ function initClient() {
 
 function checkLogIn() {
     setTimeout(function() {
-      console.log(_GLOBAL.init, _GLOBAL.userId)
       if (!_GLOBAL.init) {
         var isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (isSignedIn) {
           _GLOBAL.userId = gapi.auth2.getAuthInstance().currentUser.Ab.El;
           _GLOBAL.init = true;
-        } else {
           updateSigninStatus(isSignedIn);
+        } else {
+          checkLogIn();
         }
       }
     }, 5000);
