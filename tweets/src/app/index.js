@@ -32,7 +32,7 @@ function setTweets() {
 	  document.getElementById('content').innerHTML = '';
 	  setSessionCol(result.valueRanges[0].values);
 	  setTweetPosIndex(result.valueRanges[1].values);
-	  _GLOBAL.tweets = shuffle(result.valueRanges[1].values);
+	  _GLOBAL.tweets = shuffleByAuthor(result.valueRanges[1].values);
 
 	  setDOM();
 
@@ -152,6 +152,26 @@ function getPreviousFavorites() {
 
 function getTweetRowNum(id) {
 	return _GLOBAL.tweetPosIndex.indexOf(id) + 2;
+}
+
+function shuffleByAuthor(array) {
+	var authors = {};
+	array.forEach(function(el, i) {
+		if (authors[el[NAME_INDEX]]) {
+			authors[el[NAME_INDEX]].push(i)
+		} else { 
+			authors[el[NAME_INDEX]] = [i];
+		}
+	})
+	var randomizedAuthors = shuffle(Object.keys(authors));
+	var tweets = [];
+	randomizedAuthors.forEach(function(author) {
+		authors[author].forEach(function(index) {
+			tweets.push(array[index]);
+		})
+	})
+
+	return tweets;
 }
 
 function shuffle(array) {
