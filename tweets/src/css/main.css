@@ -110,36 +110,36 @@ main page
 	display: block;
 	padding: 10px;
 	text-decoration: none;	
-	color: #fff;
-	margin: 20px 0;
+	margin: 30px 0;
+	font-weight: 400;
 }
 .topic-env {
-	background: #0277BD;	
+	background: #B3E5FC;	
 }
 .topic-env:hover {
-	background: #01579B;
+	background: #81D4FA;
 }
 .topic-immg {
-	background: #388E3C;	
+	background: #FFE0B2;	
 }
 .topic-immg:hover {
-	background: #2E7D32;
+	background: #FFCC80;
 }
 .topic-tech {
-	background: #00695C;	
+	background: #FFCDD2;	
 }
 .topic-tech:hover {
-	background: #004D40;
+	background: #F8BBD0;
 }
 .topic-test {
-	background: #546E7A;
+	background: #BDBDBD;
 }
 .topic-test:hover {
-	background: #455A64;
+	background: #9E9E9E;
 }
 #topics {
 	text-align: center;
-	padding-top: 50px;
+	padding: 50px 0;
 }
 
 /* 

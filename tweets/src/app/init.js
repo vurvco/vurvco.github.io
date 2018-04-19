@@ -37,9 +37,6 @@ function initClient() {
     updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
     signoutButton.onclick = handleSignoutClick;
 
-    _GLOBAL.userId = gapi.auth2.getAuthInstance().currentUser.Ab.El;
-    _GLOBAL.init = true;
-
   }).catch(e=>{
     console.log("error:", e);
   })
@@ -52,8 +49,6 @@ function checkLogIn() {
       if (!_GLOBAL.init) {
         var isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
         if (isSignedIn) {
-          _GLOBAL.userId = gapi.auth2.getAuthInstance().currentUser.Ab.El;
-          _GLOBAL.init = true;
           updateSigninStatus(isSignedIn);
         } else {
           handlePageError('Could not authenticate')
@@ -68,6 +63,8 @@ function checkLogIn() {
  */
 function updateSigninStatus(isSignedIn) {
   if (isSignedIn) {
+    _GLOBAL.userId = gapi.auth2.getAuthInstance().currentUser.Ab.El;
+    _GLOBAL.init = true;
     document.body.className = '';
     document.getElementById('content').style.display = 'block';
     authorizeButton.style.display = 'inline-block';
