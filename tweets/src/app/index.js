@@ -71,7 +71,7 @@ function setDOM() {
 		li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
 			+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
 			+ '<p>' + tweet[TEXT_INDEX] + '</p>'
-			+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX] + '"/>')
+			+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
 			+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
 
 		if (i === _GLOBAL.tweets.length - 1) {
