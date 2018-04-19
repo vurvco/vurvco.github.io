@@ -66,7 +66,7 @@ function setDOM() {
 		li.className = 'tweet';
 		li.setAttribute('data-fav', _GLOBAL.previousFavs.indexOf(tweetRowNum) > -1);
 		li.setAttribute('data-fav-plus', _GLOBAL.previousFavsPlus.indexOf(tweetRowNum) > -1);
-		li.setAttribute('data-id', tweet[8]);
+		li.setAttribute('data-id', tweet[ID_INDEX]);
 		content.appendChild(li);
 		li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
 			+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
@@ -82,7 +82,7 @@ function setDOM() {
 
 function setTweetPosIndex(array) {
 	_GLOBAL.tweetPosIndex = array.map(function(tweet) {
-		return tweet[8];
+		return tweet[ID_INDEX];
 	});
 }
 
