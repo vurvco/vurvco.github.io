@@ -114,16 +114,28 @@ main page
 	margin: 20px 0;
 }
 .topic-env {
-	background: #009688;	
+	background: #0277BD;	
 }
 .topic-env:hover {
-	background: #00897B;
+	background: #01579B;
+}
+.topic-immg {
+	background: #388E3C;	
+}
+.topic-immg:hover {
+	background: #2E7D32;
+}
+.topic-tech {
+	background: #00695C;	
+}
+.topic-tech:hover {
+	background: #004D40;
 }
 .topic-test {
-	background: #3F51B5;
+	background: #546E7A;
 }
 .topic-test:hover {
-	background: #3949AB;
+	background: #455A64;
 }
 #topics {
 	text-align: center;
