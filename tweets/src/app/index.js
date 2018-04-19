@@ -1,12 +1,12 @@
 _GLOBAL = {
 	init: false,
-	end: 50,
+	start: 0,
+	end: 100,
 	tweets: [],
-	tweetPosIndex: [],
 	userId: new Date().getTime() + '_temp',
 	sessionCol: false,
-	previousFavs: [],
-	previousFavsPlus: []
+	rowIndexFavs: [],
+	rowIndexFavsPlus: []
 };
 
 function setContent() {	
@@ -31,7 +31,6 @@ function setTweets() {
 
 	  document.getElementById('content').innerHTML = '';
 	  setSessionCol(result.valueRanges[0].values);
-	  setTweetPosIndex(result.valueRanges[1].values);
 	  _GLOBAL.tweets = shuffleByAuthor(result.valueRanges[1].values);
 
 	  setDOM();
@@ -55,35 +54,30 @@ function setDOM() {
 	var tweets = _GLOBAL.tweets;
 	var tweet;
 
-	content.innerHTML = '';
-
-	for (i = 0; i < Math.min(_GLOBAL.end, _GLOBAL.tweets.length); i += 1) {
+	for (i = _GLOBAL.start; i < Math.min(_GLOBAL.end, _GLOBAL.tweets.length); i += 1) {
 		tweet = tweets[i];
-		tweetRowNum = tweet[0];
+		if (tweet) {
+			tweetIndex = parseInt(tweet[0], 10) + 1;
 
-		li = document.createElement('div');
-		li.onclick = toggleIsFavorite;
-		li.className = 'tweet';
-		li.setAttribute('data-fav', _GLOBAL.previousFavs.indexOf(tweetRowNum) > -1);
-		li.setAttribute('data-fav-plus', _GLOBAL.previousFavsPlus.indexOf(tweetRowNum) > -1);
-		li.setAttribute('data-id', tweet[ID_INDEX]);
-		content.appendChild(li);
-		li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
-			+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
-			+ '<p>' + tweet[TEXT_INDEX] + '</p>'
-			+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
-			+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
+			li = document.createElement('div');
+			li.onclick = toggleIsFavorite;
+			li.className = 'tweet';
+			li.setAttribute('data-fav', _GLOBAL.rowIndexFavs.indexOf(tweetIndex) > -1);
+			li.setAttribute('data-fav-plus', _GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex) > -1);
+			li.setAttribute('data-index', tweetIndex);
+			li.setAttribute('data-id', tweet[ID_INDEX]);
+			content.appendChild(li);
+			li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
+				+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
+				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
+				+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
+				+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
 
-		if (i === _GLOBAL.tweets.length - 1) {
-			document.getElementById('view-more').style.display = 'none';
+			if (i === _GLOBAL.tweets.length - 1) {
+				document.getElementById('view-more').style.display = 'none';
+			}
 		}
 	}
-}
-
-function setTweetPosIndex(array) {
-	_GLOBAL.tweetPosIndex = array.map(function(tweet) {
-		return tweet[ID_INDEX];
-	});
 }
 
 function getExcelCol(num) {
@@ -133,10 +127,10 @@ function getPreviousFavorites() {
 
 		response.result.valueRanges[0].values.forEach(function (val, i) {
 			if (val[0] == "1" || val[0] === "2") {
-				_GLOBAL.previousFavs.push(i.toString());
+				_GLOBAL.rowIndexFavs.push(i + 1);
 			}
 			if (val[0] == "2") {
-				_GLOBAL.previousFavsPlus.push(i.toString());
+				_GLOBAL.rowIndexFavsPlus.push(i + 1);
 			}
 		});
 
@@ -148,10 +142,6 @@ function getPreviousFavorites() {
 			handlePageError(e.result.error.message);
 		}
 	});
-}
-
-function getTweetRowNum(id) {
-	return _GLOBAL.tweetPosIndex.indexOf(id) + 2;
 }
 
 function shuffleByAuthor(array) {
@@ -219,7 +209,7 @@ function writeToDoc(el) {
 
 	var params = {
 		spreadsheetId: SPREADSHEET_ID, 
-		range: _GLOBAL.sessionCol + getTweetRowNum(el.getAttribute('data-id')), 
+		range: _GLOBAL.sessionCol + el.getAttribute('data-index'), 
 		valueInputOption: 'USER_ENTERED',
 		values: [[
 			isFavPlus ? 
@@ -240,7 +230,8 @@ function writeToDoc(el) {
 }
 
 function viewMore() {
-	_GLOBAL.end += 50;
+	_GLOBAL.start += 100;
+	_GLOBAL.end += 100;
 	setDOM();
 }
 
@@ -251,10 +242,14 @@ function resetPage () {
 	document.getElementById('view-more').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
 	_GLOBAL = {
-		end: 50,
+		init: false,
+		start: 0,
+		end: 100,
 		tweets: [],
-		tweetPosIndex: [],
-		sessionCol: false
+		userId: new Date().getTime() + '_temp',
+		sessionCol: false,
+		rowIndexFavs: [],
+		rowIndexFavsPlus: []
 	};
 }
 
