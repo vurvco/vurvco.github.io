@@ -15,7 +15,7 @@ html, body {
 body.not-auth #main {
 	min-height: 30%;
 }
-body.not-auth #loading, body.not-auth #view-more {
+body.not-auth #loading, body.not-auth #view-more, body.not-auth #content {
 	display: none !important;
 }
 body.not-auth footer {
@@ -25,7 +25,6 @@ h1 {
 	text-align: center;
 	font-weight: 400;
 	font-size: 1.3rem;
-	color: #fff;
 }
 h2 {
 	font-size: 1rem;
@@ -102,6 +101,9 @@ button:hover {
 	right: 20px;
 	font-size: 1.2rem;
 }
+#instructions .link {
+	font-weight: 400;
+}
 
 /*
 main page
@@ -113,19 +115,19 @@ main page
 	margin: 30px 0;
 	font-weight: 400;
 }
-.topic-env {
+.topic-env, .env {
 	background: #B3E5FC;	
 }
 .topic-env:hover {
 	background: #81D4FA;
 }
-.topic-immg {
+.topic-immg, .immg {
 	background: #FFE0B2;	
 }
 .topic-immg:hover {
 	background: #FFCC80;
 }
-.topic-tech {
+.topic-tech, .tech {
 	background: #FFCDD2;	
 }
 .topic-tech:hover {
@@ -201,8 +203,8 @@ header {
 .home-link {
 	position: absolute;
 	left: 10px;
-	top: 15px;
-	color: #fff;
+	top: 15px;	
+	color: #455A64;
 }
 
 /*
@@ -227,4 +229,8 @@ footer button, .g-signin2 {
     * {
     	font-size: 12px;
     }
+}
+.abcRioButtonContents {
+	margin-top: 2px;
+	display: block;
 }

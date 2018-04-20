@@ -237,8 +237,9 @@ function viewMore() {
 
 function resetPage () {
 	document.body.className = 'not-auth';
-	document.getElementById('instructions').style.display = 'none';
-	document.getElementById('content').style.display = 'none';
+	if (document.getElementById('instructions')) {
+		document.getElementById('instructions').style.display = 'none';
+	}
 	document.getElementById('view-more').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
 	_GLOBAL = {

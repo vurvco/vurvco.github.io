@@ -48,12 +48,12 @@ function checkLogIn() {
     setTimeout(function() {
       if (!_GLOBAL.init) {
         var isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
-        if (isSignedIn) {
-          updateSigninStatus(isSignedIn);
-        } else {
-          handlePageError('Could not authenticate')
+        updateSigninStatus(isSignedIn);
+        if (!isSignedIn) {
+          //handlePageError('Could not authenticate')
+          checkLogIn();
         }
-      }
+      } 
     }, 5000);
 }
 
