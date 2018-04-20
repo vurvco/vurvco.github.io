@@ -3,6 +3,8 @@ _GLOBAL = {
 	start: 0,
 	end: 100,
 	tweets: [],
+	tweetsByAuthor: {},
+	authorsAlreadySeen: [],
 	userId: new Date().getTime() + '_temp',
 	sessionCol: false,
 	rowIndexFavs: [],
@@ -12,16 +14,15 @@ _GLOBAL = {
 function setContent() {	
 	if (SPREADSHEET_ID) {
 		document.getElementById('loading').style.display = 'block';
-		document.getElementById('instructions').style.display = 'none';
 		
-		setTweets();
+		setTweetsArray();
 	} else {
 		document.getElementById('loading').style.display = 'none';
 		updateSigninStatus();
 	}
 }
 
-function setTweets() {
+function setTweetsArray() {
 	gapi.client.sheets.spreadsheets.values.batchGet({
 	   spreadsheetId: SPREADSHEET_ID,
 	   ranges: ['A1:ZZZ1', 'A2:Z']
@@ -30,14 +31,10 @@ function setTweets() {
 	  console.log(`${result.valueRanges.length} ranges retrieved.`);
 
 	  document.getElementById('content').innerHTML = '';
-	  _GLOBAL.tweets = shuffleByAuthor(result.valueRanges[1].values);
 
-	  setSessionCol(result.valueRanges[0].values);
-
-	  document.getElementById('end-of-list').style.display = 'block';
-	  document.getElementById('view-more').style.display = 'block';
-	  document.getElementById('loading').style.display = 'none';
-	  document.getElementById('instructions').style.display = 'block';
+	  _GLOBAL.tweets = result.valueRanges[1].values;
+	  setTweetsByAuthor(_GLOBAL.tweets);
+	  setSessionColThenSetDOM(result.valueRanges[0].values);
 	}, function(reason) {
 		if (reason.result.error.status === "PERMISSION_DENIED") {
 			handlePageError('Please request access to the google doc')
@@ -54,6 +51,10 @@ function setDOM() {
 	var tweets = _GLOBAL.tweets;
 	var tweet;
 
+  	document.getElementById('end-of-list').style.display = 'block';
+  	document.getElementById('view-more').style.display = 'block';
+  	document.getElementById('loading').style.display = 'none';
+
 	for (i = _GLOBAL.start; i < _GLOBAL.end; i += 1) {
 		tweet = tweets[i];
 		if (tweet) {
@@ -67,13 +68,13 @@ function setDOM() {
 			li.setAttribute('data-index', tweetIndex);
 			li.setAttribute('data-id', tweet[ID_INDEX]);
 
-			content.appendChild(li);
-
 			li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
 				+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
 				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
 				+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
 				+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
+
+			content.appendChild(li);
 		} else {
 			document.getElementById('view-more').style.display = 'none';
 			break;
@@ -96,7 +97,7 @@ function getExcelCol(num) {
 	return ret;
 }
 
-function setSessionCol(values) {
+function setSessionColThenSetDOM(values) {
 	var userColumn = values[0].indexOf('user_' + _GLOBAL.userId);
 	var num = userColumn > -1 ? userColumn + 1 : values[0].length + 1;
 
@@ -115,32 +116,46 @@ function setSessionCol(values) {
 		}, function(reason) {
 		  console.error('error: ' + reason.result.error.message);
 		  handlePageError(reason.result.error.message);
+		  if (reason.result.error.status === 'PERMISSION_DENIED') {
+		  	document.getElementById('content').style.display = 'none';
+		  	document.getElementById('end-of-list').style.display = 'none';
+		  }
 		});
+
+		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets)
 
 		setDOM();
 
 	} else if (gapi.auth2.getAuthInstance().isSignedIn) { 
 		// else set previous favorites, then set DOM
-		setPreviousFavoritesThenDOM();
+		setPreviousFavoritesThenSetDOM();
 	} else {
 		handlePageError('Please sign in')
 	}
 }
 
-function setPreviousFavoritesThenDOM() {
+function setPreviousFavoritesThenSetDOM() {
+	var author; 
+
 	gapi.client.sheets.spreadsheets.values.batchGet({
 	   spreadsheetId: SPREADSHEET_ID,
-	   ranges: [_GLOBAL.sessionCol + ':' + _GLOBAL.sessionCol] 
+	   ranges: ['A2:' + _GLOBAL.sessionCol] 
 	}).then(function(response) {
 
 		response.result.valueRanges[0].values.forEach(function (val, i) {
-			if (val[0] == "1" || val[0] === "2") {
-				_GLOBAL.rowIndexFavs.push(i + 1);
+			if (val[val.length-1] == "1" || val[val.length-1] === "2") {
+				_GLOBAL.rowIndexFavs.push(i + 2);
+				author = val[NAME_INDEX];
+				if (_GLOBAL.authorsAlreadySeen.indexOf(author) === -1) {
+					_GLOBAL.authorsAlreadySeen.push(author);
+				}
 			}
-			if (val[0] == "2") {
-				_GLOBAL.rowIndexFavsPlus.push(i + 1);
+			if (val[val.length-1] == "2") {
+				_GLOBAL.rowIndexFavsPlus.push(i + 2);
 			}
 		});
+
+		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets);
 
 	  	setDOM();
 	}).catch(function(e) {
@@ -152,7 +167,7 @@ function setPreviousFavoritesThenDOM() {
 	});
 }
 
-function shuffleByAuthor(array) {
+function setTweetsByAuthor(array) {
 	var authors = {};
 	array.forEach(function(el, i) {
 		if (authors[el[NAME_INDEX]]) {
@@ -161,10 +176,23 @@ function shuffleByAuthor(array) {
 			authors[el[NAME_INDEX]] = [i];
 		}
 	})
-	var randomizedAuthors = shuffle(Object.keys(authors));
+
+	_GLOBAL.tweetsByAuthor = authors;
+}
+
+function shuffleByAuthor(array) {
+	var randomizedAuthors = shuffle(Object.keys(_GLOBAL.tweetsByAuthor));
 	var tweets = [];
+
+	//give priority if author not already seen (no tweets by author favorited)
+	if (_GLOBAL.authorsAlreadySeen.length > 0) {
+		randomizedAuthors.sort(function(a, b) {
+			return _GLOBAL.authorsAlreadySeen.indexOf(a) > -1 ? 1 : 0;
+		});
+	}
+
 	randomizedAuthors.forEach(function(author) {
-		authors[author].forEach(function(index) {
+		_GLOBAL.tweetsByAuthor[author].forEach(function(index) {
 			tweets.push(array[index]);
 		})
 	})
@@ -245,9 +273,6 @@ function viewMore() {
 
 function resetPage () {
 	document.body.className = 'not-auth';
-	if (document.getElementById('instructions')) {
-		document.getElementById('instructions').style.display = 'none';
-	}
 	document.getElementById('view-more').style.display = 'none';
 	document.getElementById('end-of-list').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
@@ -256,6 +281,8 @@ function resetPage () {
 		start: 0,
 		end: 100,
 		tweets: [],
+		tweetsByAuthor: {},
+		authorsAlreadySeen: [],
 		userId: new Date().getTime() + '_temp',
 		sessionCol: false,
 		rowIndexFavs: [],
