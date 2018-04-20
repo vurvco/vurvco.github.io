@@ -15,7 +15,7 @@ html, body {
 body.not-auth #main {
 	min-height: 30%;
 }
-body.not-auth #loading, body.not-auth #view-more, body.not-auth #content {
+body.not-auth #loading, body.not-auth #view-more, body.not-auth #content, body.not-auth #end-of-list, body.not-auth footer .home-link {
 	display: none !important;
 }
 body.not-auth footer {
@@ -61,12 +61,15 @@ button {
 button:hover {
 	background: #00897B;
 }
+.bold {
+	font-weight: 800;
+}
 
 #main {
 	max-width: 700px;
 	margin: 0 auto;
 	min-height: 100%;
-	padding-bottom: 150px;
+	padding-bottom: 160px;
 }
 #loading {
 	text-align: center;
@@ -191,6 +194,10 @@ tweet cards
 	display: none;
 	margin: 80px auto;
 }
+#tweet-count {
+	text-align: center;
+	margin: 2rem 0;
+}
 /*
 header
 */
@@ -200,7 +207,7 @@ header {
 	padding: 10px 0 0 0;
 	background: #fb8378;
 }
-.home-link {
+header .home-link {
 	position: absolute;
 	left: 10px;
 	top: 15px;	
@@ -213,8 +220,8 @@ footer
 footer {
 	position: relative;
 	width: 100%;
-	margin-top: -150px;
-	height: 150px;
+	margin-top: -160px;
+	height: 160px;
 	text-align: center;
 }
 footer .btn-auth {
@@ -222,6 +229,10 @@ footer .btn-auth {
 	display: none;
 }
 footer button, .g-signin2 {
+	display: none;
+}
+footer .home-link {
+	margin-top: 2rem;
 	display: none;
 }
 

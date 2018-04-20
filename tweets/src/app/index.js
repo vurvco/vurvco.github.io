@@ -35,6 +35,7 @@ function setTweets() {
 
 	  setDOM();
 
+	  document.getElementById('end-of-list').style.display = 'block';
 	  document.getElementById('view-more').style.display = 'block';
 	  document.getElementById('loading').style.display = 'none';
 	  document.getElementById('instructions').style.display = 'block';
@@ -54,7 +55,7 @@ function setDOM() {
 	var tweets = _GLOBAL.tweets;
 	var tweet;
 
-	for (i = _GLOBAL.start; i < Math.min(_GLOBAL.end, _GLOBAL.tweets.length); i += 1) {
+	for (i = _GLOBAL.start; i < _GLOBAL.end; i += 1) {
 		tweet = tweets[i];
 		if (tweet) {
 			tweetIndex = parseInt(tweet[0], 10) + 1;
@@ -66,18 +67,26 @@ function setDOM() {
 			li.setAttribute('data-fav-plus', _GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex) > -1);
 			li.setAttribute('data-index', tweetIndex);
 			li.setAttribute('data-id', tweet[ID_INDEX]);
-			content.appendChild(li);
+
 			li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
 				+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
 				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
 				+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
 				+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
 
-			if (i === _GLOBAL.tweets.length - 1) {
-				document.getElementById('view-more').style.display = 'none';
-			}
+			content.appendChild(li);
+		} else {
+			document.getElementById('view-more').style.display = 'none';
+			break;
 		}
 	}
+
+	document.getElementById('tweet-count').innerHTML = 'viewing <span class="bold">' 
+		+ Math.min(tweets.length, _GLOBAL.end) 
+		+ ' / ' 
+		+ tweets.length
+		+ '</span>'
+		+ ' tweets';
 }
 
 function getExcelCol(num) {
@@ -241,6 +250,7 @@ function resetPage () {
 		document.getElementById('instructions').style.display = 'none';
 	}
 	document.getElementById('view-more').style.display = 'none';
+	document.getElementById('end-of-list').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
 	_GLOBAL = {
 		init: false,

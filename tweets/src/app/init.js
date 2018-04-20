@@ -71,6 +71,10 @@ function updateSigninStatus(isSignedIn) {
     signoutButton.style.display = 'inline-block';
     document.getElementById('loading').style.display = 'none';
 
+    if (document.getElementById('footer-home-link')) {
+      document.getElementById('footer-home-link').style.display = 'block';
+    }
+
     if (document.getElementById('topics')) {
       document.getElementById('topics').style.display = 'block';
     } else {
