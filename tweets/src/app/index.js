@@ -30,10 +30,9 @@ function setTweets() {
 	  console.log(`${result.valueRanges.length} ranges retrieved.`);
 
 	  document.getElementById('content').innerHTML = '';
-	  setSessionCol(result.valueRanges[0].values);
 	  _GLOBAL.tweets = shuffleByAuthor(result.valueRanges[1].values);
 
-	  setDOM();
+	  setSessionCol(result.valueRanges[0].values);
 
 	  document.getElementById('end-of-list').style.display = 'block';
 	  document.getElementById('view-more').style.display = 'block';
@@ -68,13 +67,13 @@ function setDOM() {
 			li.setAttribute('data-index', tweetIndex);
 			li.setAttribute('data-id', tweet[ID_INDEX]);
 
+			content.appendChild(li);
+
 			li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
 				+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
 				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
 				+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
 				+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
-
-			content.appendChild(li);
 		} else {
 			document.getElementById('view-more').style.display = 'none';
 			break;
@@ -122,13 +121,13 @@ function setSessionCol(values) {
 
 	} else if (gapi.auth2.getAuthInstance().isSignedIn) { 
 		// else set previous favorites, then set DOM
-		getPreviousFavorites();
+		setPreviousFavoritesThenDOM();
 	} else {
 		handlePageError('Please sign in')
 	}
 }
 
-function getPreviousFavorites() {
+function setPreviousFavoritesThenDOM() {
 	gapi.client.sheets.spreadsheets.values.batchGet({
 	   spreadsheetId: SPREADSHEET_ID,
 	   ranges: [_GLOBAL.sessionCol + ':' + _GLOBAL.sessionCol] 
