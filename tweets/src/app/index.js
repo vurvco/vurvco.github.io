@@ -4,6 +4,7 @@ _GLOBAL = {
 	end: 100,
 	tweets: [],
 	tweetsByAuthor: {},
+	tweetIndexDictionary: {},
 	authorsAlreadySeen: [],
 	userId: new Date().getTime() + '_temp',
 	sessionCol: false,
@@ -33,7 +34,7 @@ function setTweetsArray() {
 	  document.getElementById('content').innerHTML = '';
 
 	  _GLOBAL.tweets = result.valueRanges[1].values;
-	  setTweetsByAuthor(_GLOBAL.tweets);
+	  setTweetMetaData(_GLOBAL.tweets);
 	  setSessionColThenSetDOM(result.valueRanges[0].values);
 	}, function(reason) {
 		if (reason.result.error.status === "PERMISSION_DENIED") {
@@ -58,7 +59,7 @@ function setDOM() {
 	for (i = _GLOBAL.start; i < _GLOBAL.end; i += 1) {
 		tweet = tweets[i];
 		if (tweet) {
-			tweetIndex = parseInt(tweet[0], 10) + 1;
+			tweetIndex = _GLOBAL.tweetIndexDictionary[tweet[ID_INDEX]];
 
 			li = document.createElement('div');
 			li.onclick = toggleIsFavorite;
@@ -167,16 +168,19 @@ function setPreviousFavoritesThenSetDOM() {
 	});
 }
 
-function setTweetsByAuthor(array) {
+function setTweetMetaData(array) {
 	var authors = {};
+	var d = {};
 	array.forEach(function(el, i) {
 		if (authors[el[NAME_INDEX]]) {
 			authors[el[NAME_INDEX]].push(i)
 		} else { 
 			authors[el[NAME_INDEX]] = [i];
 		}
+		d[el[ID_INDEX]] = i + 2;
 	})
 
+	_GLOBAL.tweetIndexDictionary = d;
 	_GLOBAL.tweetsByAuthor = authors;
 }
 
@@ -282,6 +286,7 @@ function resetPage () {
 		end: 100,
 		tweets: [],
 		tweetsByAuthor: {},
+		tweetIndexDictionary: {},
 		authorsAlreadySeen: [],
 		userId: new Date().getTime() + '_temp',
 		sessionCol: false,
