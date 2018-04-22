@@ -101,8 +101,11 @@ button:hover {
 #instructions span {
 	position: absolute;
 	top: 5px;
-	right: 20px;
+	right: 18px;
 	font-size: 1.2rem;
+}
+#instructions span a:hover {
+	text-decoration: none;
 }
 
 /*
@@ -127,10 +130,10 @@ main page
 .topic-immg:hover {
 	background: #FFCC80;
 }
-.topic-tech, .tech {
+.topic-guns, .guns {
 	background: #FFCDD2;	
 }
-.topic-tech:hover {
+.topic-guns:hover {
 	background: #F8BBD0;
 }
 .topic-test {

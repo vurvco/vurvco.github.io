@@ -43,12 +43,8 @@ function initClient() {
 
   checkLogIn();
 
-  if (document.getElementById('instructions') && SPREADSHEET_ID != null) {
-    var p = document.createElement('p');
-    p.innerHTML = '<a class="link" target="_blank" href= "' + 'https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID + '">'
-      + 'view spreadsheet here'
-      + '</a>';
-    document.getElementById('instructions').appendChild(p);
+  if (document.getElementById('instructions-sheet-link') && SPREADSHEET_ID != null) {
+    document.getElementById('instructions-sheet-link').setAttribute('href', 'https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID);
   }
 }
 
