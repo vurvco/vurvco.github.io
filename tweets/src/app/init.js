@@ -43,10 +43,6 @@ function initClient() {
 
   checkLogIn();
 
-  if (document.getElementById('instructions-sheet-link') && SPREADSHEET_ID != null) {
-    document.getElementById('instructions-sheet-link').setAttribute('href', 'https://docs.google.com/spreadsheets/d/' + SPREADSHEET_ID);
-  }
-
   document.getElementById('search-input').addEventListener('input', function(e) {
     filterTweets(this.value)
   });

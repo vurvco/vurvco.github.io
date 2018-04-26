@@ -35,7 +35,6 @@ function setTweetsArray() {
 	  document.getElementById('content').innerHTML = '';
 
 	  _GLOBAL.tweets = result.valueRanges[1].values;
-	  _GLOBAL.tweets_all = result.valueRanges[1].values;
 	  setTweetMetaData(_GLOBAL.tweets);
 	  setSessionColThenSetDOM(result.valueRanges[0].values);
 	}, function(reason) {
@@ -55,6 +54,7 @@ function setDOM() {
 	var tweet;
 
   	document.getElementById('end-of-list').style.display = 'block';
+  	document.getElementById('search').style.display = 'block';
   	document.getElementById('view-more').style.display = 'block';
   	document.getElementById('loading').style.display = 'none';
 
@@ -122,10 +122,12 @@ function setSessionColThenSetDOM(values) {
 		  if (reason.result.error.status === 'PERMISSION_DENIED') {
 		  	document.getElementById('content').style.display = 'none';
 		  	document.getElementById('end-of-list').style.display = 'none';
+		  	document.getElementById('search').style.display = 'none';
 		  }
 		});
 
 		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets)
+		_GLOBAL.tweets_all = _GLOBAL.tweets.slice();
 
 		setDOM();
 
@@ -138,7 +140,8 @@ function setSessionColThenSetDOM(values) {
 }
 
 function filterTweets(input) {
-	var searchTerms = input.trim().toLowerCase().split(' ');
+	input = input.trim();
+	var searchTerms = input.toLowerCase().split(' ');
 	var containsAll;
 	var legislator;
 	var text;
@@ -157,6 +160,12 @@ function filterTweets(input) {
 
 		return containsAll;
  	});
+
+	if (input.length > 0) {
+		document.getElementById('search-clear').style.display = 'block';
+	} else {
+		document.getElementById('search-clear').style.display = 'none';
+	}
 
  	document.getElementById('content').innerHTML = '';
 
@@ -193,6 +202,7 @@ function setPreviousFavoritesThenSetDOM() {
 		});
 
 		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets);
+		_GLOBAL.tweets_all = _GLOBAL.tweets.slice();
 
 	  	setDOM();
 	}).catch(function(e) {
@@ -337,6 +347,7 @@ function resetPage () {
 	document.body.className = 'not-auth';
 	document.getElementById('view-more').style.display = 'none';
 	document.getElementById('end-of-list').style.display = 'none';
+	document.getElementById('search').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
 	_GLOBAL = {
 		init: false,
