@@ -42,6 +42,10 @@ function initClient() {
   })
 
   checkLogIn();
+
+  document.getElementById('search-input').addEventListener('input', function(e) {
+    filterTweets(this.value)
+  });
 }
 
 function checkLogIn() {

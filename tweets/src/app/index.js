@@ -2,8 +2,10 @@ _GLOBAL = {
 	init: false,
 	start: 0,
 	end: 100,
+	tweets_all: [],
 	tweets: [],
 	tweetsByAuthor: {},
+	tweetIndexDictionary: {},
 	authorsAlreadySeen: [],
 	userId: new Date().getTime() + '_temp',
 	sessionCol: false,
@@ -33,7 +35,7 @@ function setTweetsArray() {
 	  document.getElementById('content').innerHTML = '';
 
 	  _GLOBAL.tweets = result.valueRanges[1].values;
-	  setTweetsByAuthor(_GLOBAL.tweets);
+	  setTweetMetaData(_GLOBAL.tweets);
 	  setSessionColThenSetDOM(result.valueRanges[0].values);
 	}, function(reason) {
 		if (reason.result.error.status === "PERMISSION_DENIED") {
@@ -52,13 +54,14 @@ function setDOM() {
 	var tweet;
 
   	document.getElementById('end-of-list').style.display = 'block';
+  	document.getElementById('search').style.display = 'block';
   	document.getElementById('view-more').style.display = 'block';
   	document.getElementById('loading').style.display = 'none';
 
 	for (i = _GLOBAL.start; i < _GLOBAL.end; i += 1) {
 		tweet = tweets[i];
 		if (tweet) {
-			tweetIndex = parseInt(tweet[0], 10) + 1;
+			tweetIndex = _GLOBAL.tweetIndexDictionary[tweet[ID_INDEX]];
 
 			li = document.createElement('div');
 			li.onclick = toggleIsFavorite;
@@ -119,10 +122,12 @@ function setSessionColThenSetDOM(values) {
 		  if (reason.result.error.status === 'PERMISSION_DENIED') {
 		  	document.getElementById('content').style.display = 'none';
 		  	document.getElementById('end-of-list').style.display = 'none';
+		  	document.getElementById('search').style.display = 'none';
 		  }
 		});
 
 		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets)
+		_GLOBAL.tweets_all = _GLOBAL.tweets.slice();
 
 		setDOM();
 
@@ -132,6 +137,47 @@ function setSessionColThenSetDOM(values) {
 	} else {
 		handlePageError('Please sign in')
 	}
+}
+
+function filterTweets(input) {
+	input = input.trim();
+	var searchTerms = input.toLowerCase().split(' ');
+	var containsAll;
+	var legislator;
+	var text;
+
+	var filteredTweets = _GLOBAL.tweets_all.slice().filter(function(tweet) {
+		containsAll = true;
+
+		legislator = tweet[NAME_INDEX].toLowerCase();
+		text = tweet[TEXT_INDEX].toLowerCase();
+
+		searchTerms.forEach(function(term) {
+			if (legislator.indexOf(term) === -1 && text.indexOf(term) === -1) {
+				containsAll = false;
+			}
+		});
+
+		return containsAll;
+ 	});
+
+	if (input.length > 0) {
+		document.getElementById('search-clear').style.display = 'block';
+	} else {
+		document.getElementById('search-clear').style.display = 'none';
+	}
+
+ 	document.getElementById('content').innerHTML = '';
+
+ 	_GLOBAL.tweets = filteredTweets;
+ 	_GLOBAL.start = 0;
+ 	_GLOBAL.end = 100;
+ 	setDOM();
+}
+
+function clearSearch() {
+	document.getElementById('search-input').value = '';
+	filterTweets('');
 }
 
 function setPreviousFavoritesThenSetDOM() {
@@ -156,6 +202,7 @@ function setPreviousFavoritesThenSetDOM() {
 		});
 
 		_GLOBAL.tweets = shuffleByAuthor(_GLOBAL.tweets);
+		_GLOBAL.tweets_all = _GLOBAL.tweets.slice();
 
 	  	setDOM();
 	}).catch(function(e) {
@@ -167,16 +214,19 @@ function setPreviousFavoritesThenSetDOM() {
 	});
 }
 
-function setTweetsByAuthor(array) {
+function setTweetMetaData(array) {
 	var authors = {};
+	var d = {};
 	array.forEach(function(el, i) {
 		if (authors[el[NAME_INDEX]]) {
 			authors[el[NAME_INDEX]].push(i)
 		} else { 
 			authors[el[NAME_INDEX]] = [i];
 		}
+		d[el[ID_INDEX]] = i + 2;
 	})
 
+	_GLOBAL.tweetIndexDictionary = d;
 	_GLOBAL.tweetsByAuthor = authors;
 }
 
@@ -218,10 +268,17 @@ function shuffle(array) {
 function toggleIsFavorite() {
 	var isFav = this.getAttribute('data-fav') === 'true';
 	var newFav = !isFav;
+	var tweetIndex = parseInt(this.getAttribute('data-index'), 10);
 
 	this.setAttribute('data-fav', newFav);
 	if (!newFav) {
 		this.setAttribute('data-fav-plus', false);
+		_GLOBAL.rowIndexFavs.splice(_GLOBAL.rowIndexFavs.indexOf(tweetIndex), 1);
+		if (_GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex) > -1) {
+			_GLOBAL.rowIndexFavsPlus.splice(_GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex), 1);
+		}
+	} else {
+		_GLOBAL.rowIndexFavs.push(tweetIndex);
 	}
 
 	writeToDoc(this);
@@ -232,9 +289,24 @@ function toggleIsFavoritePlus(e) {
 	var tweet = e.target.parentNode;
 	var isFavPlus = tweet.getAttribute('data-fav-plus') === 'true';
 	var newFavPlus = !isFavPlus;
+	var tweetIndex = parseInt(tweet.getAttribute('data-index'), 10);
 
 	tweet.setAttribute('data-fav', newFavPlus);
 	tweet.setAttribute('data-fav-plus', newFavPlus);
+
+	if (newFavPlus) {
+		_GLOBAL.rowIndexFavsPlus.push(tweetIndex);
+		if (_GLOBAL.rowIndexFavs.indexOf(tweetIndex) === -1) {
+			_GLOBAL.rowIndexFavs.push(tweetIndex);
+		}
+	} else {
+		if (_GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex) > -1) {
+			_GLOBAL.rowIndexFavsPlus.splice(_GLOBAL.rowIndexFavsPlus.indexOf(tweetIndex), 1);
+		}
+		if (_GLOBAL.rowIndexFavs.indexOf(tweetIndex) > -1) {
+			_GLOBAL.rowIndexFavs.splice(_GLOBAL.rowIndexFavs.indexOf(tweetIndex), 1);
+		}
+	}
 
 	writeToDoc(tweet);
 }
@@ -275,13 +347,16 @@ function resetPage () {
 	document.body.className = 'not-auth';
 	document.getElementById('view-more').style.display = 'none';
 	document.getElementById('end-of-list').style.display = 'none';
+	document.getElementById('search').style.display = 'none';
 	document.getElementById('content').innerHTML = '';
 	_GLOBAL = {
 		init: false,
 		start: 0,
 		end: 100,
+		tweets_all: [],
 		tweets: [],
 		tweetsByAuthor: {},
+		tweetIndexDictionary: {},
 		authorsAlreadySeen: [],
 		userId: new Date().getTime() + '_temp',
 		sessionCol: false,

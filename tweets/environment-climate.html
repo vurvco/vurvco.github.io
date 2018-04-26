@@ -32,6 +32,14 @@
             &#9432;
         </a></span>
       </div>
+
+      <div id='search'>
+        <input type='text' id='search-input' placeholder='search legislator or tweet' />
+        <button id='search-clear' class='btn-transparent' onclick='clearSearch("")'>
+          &times;
+        </button>
+      </div>
+
       <div id='loading'>
         <img src="./src/img/loading.svg" alt="..." />
       </div>
@@ -48,6 +56,7 @@
       </div>
     </div>
     <footer>
+        <a href="#" class='link' id='to-top'>^ back to top</a>
         <div id="authorize-button" class="g-signin2" data-onsuccess="onSignIn"></div>
         <div>
           <button id="signout-button" class="btn-auth link">Sign Out</button>

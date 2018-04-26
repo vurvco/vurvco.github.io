@@ -28,10 +28,19 @@
         <p>click on tweets that are <a class='link' target="_blank" href="https://docs.google.com/document/d/1-obnW3xmf8UlCd5bDraUULld5WywUPt89cOJbXKC_nc">interesting</a>.</p>
         <p>if a tweet is especially interesting, click the star icon.</p>
         <p>you may undo selections.</p>
+        <p><a id='instructions-sheet-link' class='link' href='#' target='_blank'>view spreadsheet here</a></p>
         <span><a class='link' target="_blank" href="https://docs.google.com/document/d/1-obnW3xmf8UlCd5bDraUULld5WywUPt89cOJbXKC_nc">
             &#9432;
         </a></span>
       </div>
+
+      <div id='search'>
+        <input type='text' id='search-input' placeholder='search legislator or tweet' />
+        <button id='search-clear' class='btn-transparent' onclick='clearSearch("")'>
+          &times;
+        </button>
+      </div>
+      
       <div id='loading'>
         <img src="./src/img/loading.svg" alt="..." />
       </div>
@@ -49,6 +58,7 @@
     </div>
 
     <footer>
+        <a href="#" class='link' id='to-top'>^ back to top</a>
         <div id="authorize-button" class="g-signin2" data-onsuccess="onSignIn"></div>
         <div>
           <button id="signout-button" class="btn-auth link">Sign Out</button>
