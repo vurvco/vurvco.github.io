@@ -61,6 +61,9 @@ button {
 button:hover {
 	background: #00897B;
 }
+input {
+	width: 100%;
+}
 .bold {
 	font-weight: 800;
 }
@@ -91,7 +94,6 @@ button:hover {
 	background: #dbefff;
 	padding: 10px 20px 10px 25px;
 	position: relative;
-	margin: 0 0 1rem 0;
 	font-weight: bold;
 }
 #instructions p {
@@ -106,6 +108,24 @@ button:hover {
 }
 #instructions span a:hover {
 	text-decoration: none;
+}
+#search {
+	margin: 0 0 1rem 0;
+	background: #fff;
+	padding: 10px;
+	position: relative;
+}
+#search-input {
+	padding: 3px 2rem 3px 10px;
+}
+#search-clear {
+	position: absolute;
+	right: 0;
+	font-size: 2rem;
+	color: #455A64;
+	line-height: 2rem;
+	background: transparent;
+	top: 5px;
 }
 
 /*
