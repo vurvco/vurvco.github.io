@@ -72,7 +72,7 @@ function setDOM() {
 			li.setAttribute('data-id', tweet[ID_INDEX]);
 
 			li.innerHTML = (PROFILE_IMAGE_INDEX ? '<img class="profile-pic" src="' + tweet[PROFILE_IMAGE_INDEX] + '" alt=""/>' : '')
-				+ '<h2>' + tweet[NAME_INDEX] + '</h2>'
+				+ '<h2>' + (POSITION_INDEX ? tweet[POSITION_INDEX] + ' &ndash; ' : '') +  tweet[NAME_INDEX] + '</h2>'
 				+ '<h3>' + tweet[HANDLE_INDEX] + '</h3>'
 				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
 				+ (tweet[MEDIA_INDEX] && tweet[MEDIA_INDEX].indexOf('http') > -1 ? '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>' : '')
