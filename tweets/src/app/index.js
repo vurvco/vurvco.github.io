@@ -234,11 +234,11 @@ function setTweetMetaData(array) {
 }
 
 function shuffleByAuthor(array) {
-	var randomizedAuthors = !_GLOBAL.disable_shuffle ? shuffle(Object.keys(_GLOBAL.tweetsByAuthor)) : Object.keys(_GLOBAL.tweetsByAuthor);
+	var randomizedAuthors = !DISABLE_SHUFFLE ? shuffle(Object.keys(_GLOBAL.tweetsByAuthor)) : Object.keys(_GLOBAL.tweetsByAuthor);
 	var tweets = [];
 
 	//give priority if author not already seen (no tweets by author favorited)
-	if (_GLOBAL.authorsAlreadySeen.length > 0 && !_GLOBAL.disable_shuffle) {
+	if (_GLOBAL.authorsAlreadySeen.length > 0 && !DISABLE_SHUFFLE) {
 		randomizedAuthors.sort(function(a, b) {
 			return _GLOBAL.authorsAlreadySeen.indexOf(a) > -1 ? 1 : 0;
 		});
