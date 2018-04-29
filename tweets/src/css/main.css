@@ -237,6 +237,17 @@ tweet cards
 .tweet[data-fav-plus="true"] .tweet-fav-plus {
 	color: #31cc8b;
 }
+.profile-pic {
+	height: 50px;
+	border-radius: 100%;
+	margin: 0 10px -15px 0;
+}
+.crowd-score {
+	float: right;
+}
+.tweet-footer span {
+	font-size: 0.8rem;
+}
 #view-more {
 	display: none;
 	margin: 4rem auto;

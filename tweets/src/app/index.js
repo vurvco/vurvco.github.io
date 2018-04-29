@@ -71,10 +71,12 @@ function setDOM() {
 			li.setAttribute('data-index', tweetIndex);
 			li.setAttribute('data-id', tweet[ID_INDEX]);
 
-			li.innerHTML = '<h2>' + tweet[NAME_INDEX] + '</h2>'
-				+ '<h3>@' + tweet[HANDLE_INDEX] + '</h3>'
+			li.innerHTML = (PROFILE_IMAGE_INDEX ? '<img class="profile-pic" src="' + tweet[PROFILE_IMAGE_INDEX] + '" alt=""/>' : '')
+				+ '<h2>' + tweet[NAME_INDEX] + '</h2>'
+				+ '<h3>' + tweet[HANDLE_INDEX] + '</h3>'
 				+ '<p>' + tweet[TEXT_INDEX] + '</p>'
-				+ (tweet[MEDIA_INDEX] && '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>')
+				+ (tweet[MEDIA_INDEX] && tweet[MEDIA_INDEX].indexOf('http') > -1 ? '<img src="' + tweet[MEDIA_INDEX].replace('http://', 'https://') + '"/>' : '')
+				+ (DATE_INDEX ? '<div class="tweet-footer"><span>' + tweet[DATE_INDEX] + '</span><span class="crowd-score">crowd score: ' + tweet[CROWD_SCORE_INDEX] + '</span></div>' : '')
 				+ '<button class="tweet-fav-plus" onclick="toggleIsFavoritePlus(event)"></button>';
 
 			content.appendChild(li);
@@ -206,6 +208,7 @@ function setPreviousFavoritesThenSetDOM() {
 
 	  	setDOM();
 	}).catch(function(e) {
+		console.log(e)
 		if (e.result.error.status === "PERMISSION_DENIED") {
 			handlePageError('Please request access to the google doc')
 		} else {
@@ -231,11 +234,11 @@ function setTweetMetaData(array) {
 }
 
 function shuffleByAuthor(array) {
-	var randomizedAuthors = shuffle(Object.keys(_GLOBAL.tweetsByAuthor));
+	var randomizedAuthors = !_GLOBAL.disable_shuffle ? shuffle(Object.keys(_GLOBAL.tweetsByAuthor)) : Object.keys(_GLOBAL.tweetsByAuthor);
 	var tweets = [];
 
 	//give priority if author not already seen (no tweets by author favorited)
-	if (_GLOBAL.authorsAlreadySeen.length > 0) {
+	if (_GLOBAL.authorsAlreadySeen.length > 0 && !_GLOBAL.disable_shuffle) {
 		randomizedAuthors.sort(function(a, b) {
 			return _GLOBAL.authorsAlreadySeen.indexOf(a) > -1 ? 1 : 0;
 		});
