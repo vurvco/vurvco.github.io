@@ -6,7 +6,7 @@ vurv.co network visualization
 - npm
 
 ## download
-download in current directory
+download into current directory
 ```sh
 curl -L -o master.zip https://github.com/vurvco/vurvco.github.io/archive/master.zip && unzip master.zip && rm master.zip
 ```
