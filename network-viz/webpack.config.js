@@ -1,14 +1,14 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var Path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var Webpack = require('webpack');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const Path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 function getDevTool() {
     return 'source-map';
 }
 
-var webpackConfig = {
+const webpackConfig = {
     entry: {
         index: './src/index.js'
     },

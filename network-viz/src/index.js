@@ -5,4 +5,3 @@ d3.select('#root')
   .append('p')
   .append('text')
   .text(`d3 version: ${d3.version}`)
-

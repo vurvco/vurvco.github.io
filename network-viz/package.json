@@ -18,7 +18,7 @@
   },
   "homepage": "vurvco.github.io/network-viz",
   "scripts": {
-    "build": "webpack -p",
+    "build": "webpack -d",
     "start": "webpack-dev-server --hot --progress --colors --inline"
   },
   "devDependencies": {
