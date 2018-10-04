@@ -24,14 +24,19 @@ var webpackConfig = {
                 loader: 'babel-loader'
             },
             {
-                test: /\.json$/,
-                loader: 'json-loader'
-            },
-            {
                 test: /\.scss$/,
                 exclude: /node_modules/,
                 loaders: ['style-loader', 'css-loader', 'sass-loader']
-            }
+            },
+            {
+                test: /\.csv$/,
+                loader: 'csv-loader',
+                options: {
+                  dynamicTyping: true,
+                  header: true,
+                  skipEmptyLines: true
+                }
+              }
         ]
     },
     plugins: [  
@@ -47,6 +52,9 @@ var webpackConfig = {
         new ExtractTextPlugin('./dist/styles/main.css', {
             allChunks: true
         }),
+        new CopyWebpackPlugin([
+            {from:'./src/data',to:'./dist/data'} 
+        ]), 
     ]
 };
 
