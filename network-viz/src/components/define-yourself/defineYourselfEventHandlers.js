@@ -4,27 +4,6 @@ import {parsedData} from './../../utility/dataParser';
 
 const inactive = 'rgb(80,80,80)';
 
-export function handleMouseOverIdentity(d, i) {
-	const identity = d.identity;
-	d3.selectAll('.define-yourself-links-node-line')
-		.filter(function(d) { return d.identity !== identity; })
-		.style('stroke', inactive)
-		.style('opacity', 0.2)
-
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.filter(function(d) { return d.identity !== identity; })
-		.style('fill', inactive)
-
-	d3.selectAll('.define-yourself-members-node')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) < 0; })
-		.select('circle')
-		.style('fill', inactive)
-
-	d3.selectAll('.define-yourself-members-node-label')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) > -1; })
-		.style('opacity', 1)
-}
-
 export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
 	d3.selectAll('.define-yourself-links-node-line')
 		.style('stroke', function(d) { return colorsArray[allIdentityKeys.indexOf(d.identity)]; })
@@ -43,11 +22,24 @@ export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
 		.style('opacity', 0)
 }
 
+export function handleMouseOverIdentity(d, i) {
+	const identity = d.identity;
+
+	d3.selectAll('.define-yourself-members-node')
+		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) < 0; })
+		.select('circle')
+		.style('fill', inactive)
+
+	d3.selectAll('.define-yourself-members-node-label')
+		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) > -1; })
+		.style('opacity', 1)
+
+	highlightLinks(false, identity);
+	highlightIdentity(identity);
+}
+
 export function handleMouseOverMember(d, i) {
 	const member = d.member;
-	d3.selectAll('.define-yourself-members-node-circle')
-		.filter(function(d) { return d.member !== member; })
-		.style('fill', inactive)
 	
 	d3.selectAll('.define-yourself-links-node-line')
 		.filter(function(d) { return d.member !== member; })
@@ -58,9 +50,40 @@ export function handleMouseOverMember(d, i) {
 		.filter(function(d) { return parsedData.survey[member]['define-yourself'].indexOf(d.identity) < 0; })
 		.style('fill', inactive)
 
+	highlightLinks(member, false);
+	highlightMember(member);
+}
+
+function highlightMember(member) {
+	d3.selectAll('.define-yourself-members-node-circle')
+		.filter(function(d) { return d.member !== member; })
+		.style('fill', inactive)
+
 	d3.selectAll('.define-yourself-members-node-label')
 		.filter(function(d) { return d.member === member; })
 		.style('opacity', 1)
 }
 
-export default {handleMouseOverIdentity, handleMouseOverMember, resetToDefault}
+function highlightIdentity (identity) {
+	d3.selectAll('.define-yourself-identities-node-circle')
+		.filter(function(d) { return d.identity !== identity; })
+		.style('fill', inactive)
+}
+
+function highlightLinks (member, identity) {		
+	d3.selectAll('.define-yourself-links-node-line')
+		.filter(function(d) { 
+			return (
+				(member ? d.member !== member : true) &&
+				(identity ? d.identity !== identity : true)
+			)
+		})
+		.style('stroke', inactive)
+		.style('opacity', 0.2)
+}
+
+export default {
+	handleMouseOverIdentity,
+	handleMouseOverMember,
+	resetToDefault
+}

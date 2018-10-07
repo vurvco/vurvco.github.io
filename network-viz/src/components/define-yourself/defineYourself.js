@@ -114,10 +114,6 @@ function update() {
 }
 
 function setMembersNodes() {
-	let vertices,
-		data = [],
-		position;
-
 	let members = d3.select('.define-yourself-members');
 
 	members.selectAll('.define-yourself-members-node')
