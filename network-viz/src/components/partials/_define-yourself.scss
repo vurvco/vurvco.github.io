@@ -1,0 +1,40 @@
+.define-yourself {
+	circle, stroke {
+		transition: fill 0.2s, stroke 0.2s;
+	}
+	text {
+		text-anchor: middle;
+		font-size: 1rem;text-anchor: middle
+	}
+	&-members {
+		&-node {
+			fill: #3f51b5;
+			&-label {
+				opacity: 0;
+				transition: opacity 0.2s;
+				transform: translate(0, 0.25rem);
+				text {
+					fill: beige;
+					font-size: 1.2rem;
+				}
+				rect {
+					fill: #3f51b5;
+				}
+			}
+		}
+	}
+	&-identities {
+		circle {
+			fill: #272727;
+		}
+		text {
+			fill: beige;
+		}
+	}
+	&-links {
+		line { 
+			stroke-width: 3;
+			stroke: #272727;
+		}
+	}
+}
