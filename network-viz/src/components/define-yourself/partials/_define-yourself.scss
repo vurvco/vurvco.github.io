@@ -1,24 +1,26 @@
 .define-yourself {
-	circle, stroke {
+	circle, line {
 		transition: fill 0.2s, stroke 0.2s;
 	}
 	text {
 		text-anchor: middle;
-		font-size: 1rem;text-anchor: middle
+		font-size: 1rem;
+		font-family: monospace;
 	}
 	&-members {
 		&-node {
-			fill: #3f51b5;
+			fill: #fff;
+			cursor: pointer;
 			&-label {
 				opacity: 0;
 				transition: opacity 0.2s;
 				transform: translate(0, 0.25rem);
 				text {
-					fill: beige;
+					fill: #272727;
 					font-size: 1.2rem;
 				}
 				rect {
-					fill: #3f51b5;
+					fill: #fff;
 				}
 			}
 		}
@@ -28,7 +30,11 @@
 			fill: #272727;
 		}
 		text {
-			fill: beige;
+			fill: #272727;
+			font-weight: bold;
+		}
+		&-node {
+			cursor: pointer;
 		}
 	}
 	&-links {

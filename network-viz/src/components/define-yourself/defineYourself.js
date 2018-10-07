@@ -1,8 +1,11 @@
 import * as d3 from 'd3';
 
-import {parsedData} from './../utility/dataParser';
-import {getCentroid} from './../utility/getCentroid';
-import {getColorArray} from './../utility/getColorArray';
+import * as eventHandlers from './defineYourselfEventHandlers';
+
+import {parsedData} from './../../utility/dataParser';
+import {getCentroid} from './../../utility/getCentroid';
+import {getColorArray} from './../../utility/getColorArray';
+import {d3WordWrap} from './../../utility/d3WordWrap';
 
 const outerR = 650; 
 const viewBox = Math.min(window.innerWidth, window.innerHeight);
@@ -43,13 +46,13 @@ export function init() {
 		.data(identitiesDataSet)
 		.enter().append('g')
 		.attr('class', 'define-yourself-identities-node')
-		.on('mouseover', handleMouseOverIdentity)
-		.on('mouseleave', handleMouseLeaveIdentity);
+		.on('mouseover', eventHandlers.handleMouseOverIdentity)
+		.on('mouseleave', eventHandlers.resetToDefault.bind(this, colorsArray, allIdentityKeys));
 	
 	svg.selectAll('.define-yourself-identities-node')
 		.append('circle')
 		.attr('class', 'define-yourself-identities-node-circle')
-		.style('fill', '#272727')
+		.style('fill', 'rgb(80,80,80)')
 		.attr('r', outerR/5);
 
 	svg.selectAll('.define-yourself-identities-node')
@@ -77,6 +80,9 @@ function update() {
 		.text(function(d) { return d.identity; })
 		.enter();
 
+	svg.selectAll('.define-yourself-identities-node text')
+		.call(d3WordWrap)
+
 	svg.selectAll('.define-yourself-identities-node')
 		.select('text')
 		.transition()
@@ -93,8 +99,9 @@ function update() {
 	d3.selectAll('.define-yourself-members-node-circle')
 		.transition()
 		.attr('r', outerR/25)
-		.delay(function(d,i) { return 1000 + (600 * d.index); })
-		.duration(800);
+		.delay(function(d,i) { return 1000 + (300 * d.index); })
+		.duration(600)
+		.on('end', appendMemberLabel);
 
 	d3.selectAll('.define-yourself-links-node-line')
 		.transition()		
@@ -102,8 +109,8 @@ function update() {
 		.attr('y1', function(d) { return d.start[1]; })
 		.attr('x2', function(d) { return d.end[0]; })
 		.attr('y2', function(d) { return d.end[1]; })
-		.delay(function(d) { return 1000 + (600 * d.index); })
-		.duration(800);
+		.delay(function(d) { return 1000 + (300 * d.index); })
+		.duration(600);
 }
 
 function setMembersNodes() {
@@ -118,26 +125,33 @@ function setMembersNodes() {
 		.enter()
 		.append('g')
 		.attr('class', 'define-yourself-members-node')		
-		.on('mouseover', handleMouseOverMember)
-		.on('mouseleave', handleMouseLeaveMember)
+		.on('mouseover', eventHandlers.handleMouseOverMember)
+		.on('mouseleave', eventHandlers.resetToDefault.bind(this, colorsArray, allIdentityKeys))
 		.attr('transform', function(d) { return 'translate(' + d.position[0] + ', ' + d.position[1] +')'})
 		.append('circle')
 		.attr('class', 'define-yourself-members-node-circle')
 		.attr('r', 0);
+}
 
-	members.selectAll('.define-yourself-members-node')
-		.append('g')
+function appendMemberLabel(d, i) {
+	const member = d3.select(this.parentNode);
+	let bbox;
+
+	member.append('g')
 		.attr('class', 'define-yourself-members-node-label')
 		.append('rect');
-	members.selectAll('.define-yourself-members-node-label')
+
+	const text = member.select('.define-yourself-members-node-label')
 		.append('text')
-		.text(function(d) { return d.member; });
-	members.selectAll('.define-yourself-members-node')
-		.select('rect')
-		.attr('width', function(d) { return this.parentNode.getBBox().width + 40; })
-		.attr('height', function(d) { return this.parentNode.getBBox().height + 10; })
-		.attr('x', function(d) { return this.parentNode.getBBox().x - 20; })
-		.attr('y', function(d) { return this.parentNode.getBBox().y - 5; })
+		.text(d.member);
+
+	bbox = text.node().getBBox();
+
+	member.select('rect')
+		.attr('width', bbox.width + 40)
+		.attr('height', bbox.height + 10)
+		.attr('x', bbox.x - 20)
+		.attr('y', bbox.y - 5)
 }
 
 function setIdentitiesDataSet() {
@@ -164,12 +178,24 @@ function setMemberDataSet() {
 	let vertices;
 	let pos;
 	membersDataSet = parsedData.rows.map((row, i) => {
-		vertices = [];
-		row['define-yourself'].forEach((identity) => {
-			vertices.push(identityPosLookup[identity]);
-		})
-		vertices.push([outerR, outerR]);
-		pos = getCentroid(vertices);
+		/*
+		 * option 1
+		*/
+		// vertices = [];
+		// row['define-yourself'].forEach((identity) => {
+		// 	vertices.push(identityPosLookup[identity]);
+		// })
+		// vertices.push([outerR, outerR]);
+		// pos = getCentroid(vertices);
+
+		/*
+		 * option 2
+		*/
+		let angle = (i / (parsedData.rows.length/2)) * Math.PI;
+		pos = [
+			outerR*0.45 * Math.cos(angle) + outerR,
+			outerR*0.45 * Math.sin(angle) + outerR
+		]
 
 		memberPosLookup[row['Name']] = pos;
 		allMemberKeys.push(row['Name']);
@@ -212,72 +238,6 @@ function getLinkData(d) {
 			index: allMemberKeys.indexOf(member)
 		}
 	})
-}
-
-function handleMouseOverIdentity(d, i) {
-	const identity = d.identity;
-	d3.selectAll('.define-yourself-links-node-line')
-		.filter(function(d) { return d.identity !== identity; })
-		.style('stroke', 'rgba(220,220,220,0.2)')
-
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.filter(function(d) { return d.identity !== identity; })
-		.style('fill', 'rgb(220,220,220)')
-
-	d3.selectAll('.define-yourself-members-node')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) < 0; })
-		.select('circle')
-		.style('fill', 'rgb(220,220,220)')
-
-	d3.selectAll('.define-yourself-members-node-label')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) > -1; })
-		.style('opacity', 1)
-}
-
-function handleMouseLeaveIdentity(d, i) {
-	const identity = d.identity;
-	d3.selectAll('.define-yourself-links-node-line')
-		.style('stroke', function(d) { return colorsArray[allIdentityKeys.indexOf(d.identity)]; })
-		.style('opacity', 1)
-
-	d3.selectAll('.define-yourself-members-node-circle')
-		.style('fill', '')
-
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.style('fill', function(d, i) { return colorsArray[i]; })
-
-	d3.selectAll('.define-yourself-members-node-label')
-		.style('opacity', 0)
-}
-
-function handleMouseOverMember(d, i) {
-	const member = d.member;
-	d3.selectAll('.define-yourself-members-node-circle')
-		.filter(function(d) { return d.member !== member; })
-		.style('fill', 'rgb(220,220,220)')
-	
-	d3.selectAll('.define-yourself-links-node-line')
-		.filter(function(d) { return d.member !== member; })
-		.style('stroke', 'rgba(220,220,220,0.2)')
-
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.filter(function(d) { return parsedData.survey[member]['define-yourself'].indexOf(d.identity) < 0; })
-		.style('fill', 'rgb(220,220,220)')
-
-	d3.selectAll('.define-yourself-members-node-label')
-		.filter(function(d) { return d.member === member; })
-		.style('opacity', 1)
-}
-
-function handleMouseLeaveMember(d, i) {
-	d3.selectAll('.define-yourself-members-node-circle')
-		.style('fill', '')
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.style('fill', function(d, i) { return colorsArray[i]; })
-	d3.selectAll('.define-yourself-members-node-label')
-		.style('opacity', 0)
-
-	handleMouseLeaveIdentity(d,i);
 }
 
 export default {init}

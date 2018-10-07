@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import './main.scss';
 
 import {dataParser} from './utility/dataParser';
-import defineYourself from './components/defineYourself';
+import defineYourself from './components/define-yourself/defineYourself';
 
 d3.select('#root')
   .append('svg')
