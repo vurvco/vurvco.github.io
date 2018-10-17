@@ -3,7 +3,6 @@ import * as d3 from 'd3';
 import * as eventHandlers from './defineYourselfEventHandlers';
 
 import {parsedData} from './../../utility/dataParser';
-import {getCentroid} from './../../utility/getCentroid';
 import {getColorArray} from './../../utility/getColorArray';
 import {d3WordWrap} from './../../utility/d3WordWrap';
 
@@ -174,19 +173,6 @@ function setMemberDataSet() {
 	let vertices;
 	let pos;
 	membersDataSet = parsedData.rows.map((row, i) => {
-		/*
-		 * option 1
-		*/
-		// vertices = [];
-		// row['define-yourself'].forEach((identity) => {
-		// 	vertices.push(identityPosLookup[identity]);
-		// })
-		// vertices.push([outerR, outerR]);
-		// pos = getCentroid(vertices);
-
-		/*
-		 * option 2
-		*/
 		let angle = (i / (parsedData.rows.length/2)) * Math.PI;
 		pos = [
 			outerR*0.45 * Math.cos(angle) + outerR,
