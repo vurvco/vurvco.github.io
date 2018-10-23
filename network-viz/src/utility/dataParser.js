@@ -3,12 +3,13 @@ export const connectionKeys = [
 	"vurv-start",
 	"chip",
 	"define-yourself",
-	"vocation-background",
-	"vocation-other",
+	"vocation",
 	"vurv-projects",
 	"vurv-collaboration",
 	"non-vurv-projects",
-	"non-vurv-collaboration"
+	"non-vurv-collaboration",
+	"advocation",
+	"collaborators-wanted"
 ];
 
 export var parsedData = {
@@ -22,7 +23,7 @@ export const dataParser = {
 		let survey = {};
 		data.forEach((d) => {
 			connectionKeys.forEach((key) => {
-				if (['define-yourself','vocation-background'].indexOf(key) > -1) {
+				if (['define-yourself', 'vocation', 'advocation', 'collaborators-wanted'].indexOf(key) > -1) {
 					d[key] = d[key].toLowerCase();
 				}
 				d[key] = d[key].replace(/;/g, ', ').split(', ');
@@ -57,7 +58,16 @@ export const dataParser = {
 		});
 
 		parsedData.connections = connections;
+	},
+	getConnectionKeys(connectionId) {
+		return Object.keys(parsedData.connections[connectionId]).sort() || [];
+	},
+	getConnections(connectionId) {
+		return parsedData.connections[connectionId] || {};
+	},
+	getMembers() {
+		return parsedData.rows.map((el) => { return el.Name; }).sort() || [];
 	}
 }
 
-export default {connectionKeys, dataParser, parsedData}
+export default {dataParser, parsedData}

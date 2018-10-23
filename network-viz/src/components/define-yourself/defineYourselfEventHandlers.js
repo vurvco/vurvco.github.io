@@ -5,33 +5,33 @@ import {parsedData} from './../../utility/dataParser';
 const inactive = 'rgb(80,80,80)';
 
 export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
-	d3.selectAll('.define-yourself-links-node-line')
-		.style('stroke', function(d) { return colorsArray[allIdentityKeys.indexOf(d.identity)]; })
+	d3.selectAll('.links-node-line')
+		.style('stroke', (d) => { return colorsArray[allIdentityKeys.indexOf(d.identity)]; })
 		.style('opacity', 1)
 
-	d3.selectAll('.define-yourself-members-node-circle')
+	d3.selectAll('.members-node-circle')
 		.style('fill', '')
 
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.style('fill', function(d, i) { return colorsArray[i]; })
+	d3.selectAll('.identities-node-circle')
+		.style('fill', (d,i) => { return colorsArray[i]; })
 
-	d3.selectAll('.define-yourself-members-node-circle')
+	d3.selectAll('.members-node-circle')
 		.style('fill', '')
 
-	d3.selectAll('.define-yourself-members-node-label')
+	d3.selectAll('.members-node-label')
 		.style('opacity', 0)
 }
 
 export function handleMouseOverIdentity(d, i) {
-	const identity = d.identity;
+	const identity = d;
 
-	d3.selectAll('.define-yourself-members-node')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) < 0; })
+	d3.selectAll('.members-node')
+		.filter((d) => { return parsedData.survey[d]['define-yourself'].indexOf(identity) < 0; })
 		.select('circle')
 		.style('fill', inactive)
 
-	d3.selectAll('.define-yourself-members-node-label')
-		.filter(function(d) { return parsedData.survey[d.member]['define-yourself'].indexOf(identity) > -1; })
+	d3.selectAll('.members-node-label')
+		.filter((d) => { return parsedData.survey[d]['define-yourself'].indexOf(identity) > -1; })
 		.style('opacity', 1)
 
 	highlightLinks(false, identity);
@@ -39,40 +39,35 @@ export function handleMouseOverIdentity(d, i) {
 }
 
 export function handleMouseOverMember(d, i) {
-	const member = d.member;
-	
-	d3.selectAll('.define-yourself-links-node-line')
-		.filter(function(d) { return d.member !== member; })
-		.style('stroke', inactive)
-		.style('opacity', 0.2)
+	const thisMember = d;
 
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.filter(function(d) { return parsedData.survey[member]['define-yourself'].indexOf(d.identity) < 0; })
+	d3.selectAll('.identities-node-circle')
+		.filter((d) => { return parsedData.survey[thisMember]['define-yourself'].indexOf(d) < 0; })
 		.style('fill', inactive)
 
-	highlightLinks(member, false);
-	highlightMember(member);
+	highlightLinks(thisMember, false);
+	highlightMember(thisMember);
 }
 
 function highlightMember(member) {
-	d3.selectAll('.define-yourself-members-node-circle')
-		.filter(function(d) { return d.member !== member; })
+	d3.selectAll('.members-node-circle')
+		.filter((d) => { return d !== member; })
 		.style('fill', inactive)
 
-	d3.selectAll('.define-yourself-members-node-label')
-		.filter(function(d) { return d.member === member; })
+	d3.selectAll('.members-node-label')
+		.filter((d) => { return d === member; })
 		.style('opacity', 1)
 }
 
 function highlightIdentity (identity) {
-	d3.selectAll('.define-yourself-identities-node-circle')
-		.filter(function(d) { return d.identity !== identity; })
+	d3.selectAll('.identities-node-circle')
+		.filter((d) => { return d !== identity; })
 		.style('fill', inactive)
 }
 
-function highlightLinks (member, identity) {		
-	d3.selectAll('.define-yourself-links-node-line')
-		.filter(function(d) { 
+function highlightLinks (member, identity) {	
+	d3.selectAll('.links-node-line')
+		.filter((d) => { 
 			return (
 				(member ? d.member !== member : true) &&
 				(identity ? d.identity !== identity : true)

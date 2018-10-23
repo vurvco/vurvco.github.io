@@ -55,7 +55,10 @@ const webpackConfig = {
         new CopyWebpackPlugin([
             {from:'./src/data',to:'./dist/data'} 
         ]), 
-    ]
+    ],
+    resolve: {
+        modules: [Path.resolve(__dirname, './src'), 'node_modules']
+    }
 };
 
 webpackConfig.devServer = {
