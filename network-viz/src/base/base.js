@@ -5,11 +5,10 @@ import {dataParser} from 'utility/dataParser';
 const viewBox = Math.min(window.innerWidth, window.innerHeight);
 export const outerR = 650; 
 
-export function init() {
-	const svg = d3.select('#viz');
+export function baseInit(selector) {
+	const svg = d3.select(selector);
 
-	svg.attr('data-view', 'define-yourself')
-		.attr("preserveAspectRatio", "xMinYMin meet")
+	svg.attr("preserveAspectRatio", "xMinYMin meet")
 		.append('g')
 		.attr('class', 'links');
 
@@ -20,11 +19,12 @@ export function init() {
 		.append('g')
 		.attr('class', 'identities');
 
-	setMembers();
+	setMembers(selector);
 }
 
-function setMembers() {
-	const members = d3.select('.members');
+function setMembers(selector) {
+	const svg = d3.select(selector);
+	const members = svg.select('.members');
 
 	members.selectAll('.members-node')
 		.data(dataParser.getMembers())
@@ -58,4 +58,4 @@ function appendMemberLabel(d, i) {
 		.attr('y', bbox.y - 5)
 }
 
-export default {outerR, init};
+export default {outerR, baseInit};

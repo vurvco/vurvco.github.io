@@ -1,0 +1,61 @@
+.members {
+	&-node {
+		fill: #fff;
+		cursor: pointer;
+		&-label {
+			opacity: 0;
+			transition: opacity 0.2s;
+			transform: translate(0, 0.25rem);
+			text {
+				fill: #272727;
+				font-size: 1.2rem;
+			}
+			rect {
+				fill: #fff;
+			}
+		}
+	}
+}
+.identities {
+	circle {
+		fill: #272727;
+	}
+	text {
+		fill: #272727;
+		font-weight: bold;
+	}
+	&-node {
+		cursor: pointer;
+	}
+}
+section {
+	height: 100vh;
+	width: 100vw;
+	max-width: 80rem;
+	margin: 0 auto;
+	position: relative;
+	&:nth-child(2n+1) {
+		svg {
+			margin: 0 auto 0 0;
+		}
+		.section-desc {
+			right: 0;
+		}
+	} 
+	&:nth-child(2n) {
+		svg {
+			margin: 0 0 0 auto;
+		}
+		.section-desc {
+			left: 0;
+		}
+	} 
+}
+.section-desc {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	height: 100%;
+	width: calc(100% - 48.125rem);
+	top: 0;
+}

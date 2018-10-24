@@ -4,29 +4,48 @@ import './main.scss';
 import {dataParser} from 'utility/dataParser';
 import defineYourself from 'components/define-yourself/defineYourself';
 import vocationAdvocation from 'components/vocation-advocation/vocationAdvocation';
-import base from 'base/base';
 
-d3.select('#root')
-  .append('svg')
-  .attr('id', 'viz');
+let isInitialized = {
+	'define-yourself': false,
+	'vocation-advocation': false
+}
 
-d3.csv('./dist/data/survey.csv').then((data) => {
+d3.csv('./../data/survey.csv').then((data) => {
 	dataParser.setParsedData(data);
 
-	base.init();
-	//defineYourself.init();
-	vocationAdvocation.init();
+	initializeSections();
 
-	document.getElementById('app-navigation').onclick = () => {
-		switch (document.getElementById('viz').getAttribute('data-view')) {
-			// case 'define-yourself': 
-			// 	vocationAdvocation.init();
-			// 	break;
-			case 'vocation-advocation':
-				defineYourself.init();
-				break;
-			default:
-				break;
-		}
-	}
+	defineYourself.setup();
+
+	window.addEventListener('scroll', (e) => {
+		initializeSections();
+	});
 })
+
+function initializeSections() {	
+	Object.keys(isInitialized).forEach((section) => {
+		if (!isInitialized[section]) {
+			if (isInViewport(document.getElementById(section))) {
+				isInitialized[section] = true;
+				switch(section) {
+					case 'define-yourself':
+						defineYourself.init();
+						break;
+					case 'vocation-advocation':
+						vocationAdvocation.init();
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	})
+}
+
+function isInViewport (elem) {
+	const bounding = elem.getBoundingClientRect();
+	return (
+		bounding.top >= 0 &&
+		bounding.bottom <= (window.innerHeight+5 || document.documentElement.clientHeight+5)
+	);
+}
