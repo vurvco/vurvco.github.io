@@ -5,23 +5,25 @@
 		&-label {
 			opacity: 0;
 			transition: opacity 0.2s;
-			transform: translate(0, 0.25rem);
-			text {
-				fill: #272727;
-				font-size: 1.2rem;
-			}
 			rect {
 				fill: #fff;
+			}
+		}
+		&-label, &-initials {	
+			transform: translate(0, 0.25rem);		
+			text {
+				fill: $black;
+				font-size: 1.2rem;
 			}
 		}
 	}
 }
 .identities {
 	circle {
-		fill: #272727;
+		fill: $black;
 	}
 	text {
-		fill: #272727;
+		fill: $black;
 		font-weight: bold;
 	}
 	&-node {
@@ -34,7 +36,7 @@ section {
 	max-width: 80rem;
 	margin: 0 auto;
 	position: relative;
-	&:nth-child(2n+1) {
+	&:nth-child(2n) {
 		svg {
 			margin: 0 auto 0 0;
 		}
@@ -42,7 +44,7 @@ section {
 			right: 0;
 		}
 	} 
-	&:nth-child(2n) {
+	&:nth-child(2n+1) {
 		svg {
 			margin: 0 0 0 auto;
 		}
@@ -58,4 +60,19 @@ section {
 	height: 100%;
 	width: calc(100% - 48.125rem);
 	top: 0;
+	padding: 1rem;
+}
+@media only screen and (max-width: 980px) {
+	section {
+		height: auto;
+		margin: 3rem 0;
+	}
+	.section-desc {
+		position: relative;
+		width: 100%;
+		height: auto;
+	}
+	h2 {
+		font-size: 1rem;
+	}
 }

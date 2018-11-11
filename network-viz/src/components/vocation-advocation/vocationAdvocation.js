@@ -1,160 +1,274 @@
 import * as d3 from 'd3';
 
+import * as eventHandlers from './vocationAdvocationEventHandlers';
+
 import {parsedData, dataParser} from 'utility/dataParser';
-import {getPositionX, getPositionY} from 'utility/getPosition';
+import {getColorArray} from 'utility/getColorArray';
 import {d3WordWrap} from 'utility/d3WordWrap';
+import {getPositionX, getPositionY} from 'utility/getPosition';
 import {outerR, baseInit} from 'base/base';
 
 const svg = d3.select('#vocation-advocation-svg');
 
-export function init() {
-	baseInit('#vocation-advocation-svg');
+let identityPosLookup = {};
+let memberPosLookup = {};
 
-	setTimeout(() => {
-		setNewNodes()
-		setLinks()
-	}, 600)
+let allIdentityKeys = [];
+let allVocationKeys = [];
+let allAdvocationKeys = [];
+let colorsArray = [];
+
+let _activeView = 'vocation';
+
+export function getActiveView() {
+	return _activeView;
 }
 
-function setNewNodes() {
+export function setup() {
+	baseInit('#vocation-advocation-svg');
+	allVocationKeys = dataParser.getConnectionKeys('vocation').sort().reverse();
+	allAdvocationKeys = dataParser.getConnectionKeys('advocation').sort().reverse();
+
+	allIdentityKeys = allVocationKeys.slice();
+	allAdvocationKeys.forEach((el,i) => {
+		if (allIdentityKeys.indexOf(el) === -1) {
+			allIdentityKeys.push(el);
+		}
+	})
+	allIdentityKeys.sort().reverse();
+
+	colorsArray = getColorArray(allIdentityKeys.length);
+
+	setIdentityPosLookup();
+	
 	const identities = svg.select('.identities');
-		
-	identities.selectAll('.vocation-node')
-		.data(dataParser.getConnectionKeys('vocation'))
-		.enter()
-		.append('g')
-			.attr('class', 'vocation-node')
-			.attr('transform', 'translate(' + outerR/15 + ',0)')
-		.append('rect')
-			.attr('width', 220)
-			.attr('height', 50)
 
-	identities.selectAll('.vocation-node')
+	identities.selectAll('.identities-node')
+		.data(getActiveViewKeys())
+		.enter().append('g')
+		.attr('class', 'identities-node')		
+		.attr('transform', 'translate(' + outerR + ', ' + outerR + ')')
+
+	identities.selectAll('.identities-node')
+		.append('circle')
+		.attr('class', 'identities-node-circle')
+		.style('fill', 'rgb(80,80,80)')
+		.attr('r', outerR/5)
+}
+
+export function init() {	
+	setMemberPosLookup();
+
+	setTimeout(() => {	
+		setLinks();
+		update();
+	}, 100)
+
+	d3.select('.vocation-advocation-toggle-view')
+		.on('click', toggleView)
+}
+
+function update() {
+	svg.selectAll('.identities-node')
+		.on('mouseover', eventHandlers.handleMouseOverIdentity)
+		.on('mouseleave', eventHandlers.resetToDefault.bind(this, colorsArray, allIdentityKeys))
 		.transition()
-		.attr('transform', (d,i) => { return 'translate(' + getVocationPosX() + ', ' + getVocationPosY(i) + ')' })
-		.ease(d3.easeLinear)
-		.duration((d,i) => { return i*140; })
+		.attr('transform', (d) => { return 'translate(' + identityPosLookup[d][0] + ', ' + identityPosLookup[d][1] + ')'})
+		.duration(1500);
 
-	identities.selectAll('.advocation-node')
-		.data(dataParser.getConnectionKeys('advocation'))
-		.enter()
-		.append('g')
-			.attr('class', 'advocation-node')
-			.attr('transform', 'translate(' + (outerR*2 - outerR/15 - 220) + ',0)')
-		.append('rect')
-			.attr('width', 220)
-			.attr('height', 50)
-
-	identities.selectAll('.advocation-node, .vocation-node')
+	svg.selectAll('.identities-node')
 		.append('text')
-			.text((d) => {return d})
-			.attr('y', 28)
-			.attr('x', 10)
-			.style('text-anchor', 'start');
+		.style('opacity', 0)
+		.text((d) => { return d; })
+		.enter();
 
-	identities.selectAll('.advocation-node text')
-		.attr('x', 210)
-		.style('text-anchor', 'end');
+	svg.selectAll('.identities-node text')
+		.call(d3WordWrap)
 
-	identities.selectAll('.advocation-node')
+	svg.selectAll('.identities-node')
+		.select('text')
 		.transition()
-		.attr('transform', (d,i) => { return 'translate(' + getAdvocationPosX() + ', ' + getAdvocationPosY(i) + ')' })
-		.ease(d3.easeLinear)
-		.duration((d,i) => { return i*140; })
+		.style('opacity', 1)
+		.duration(1500);
+
+	svg.selectAll('.identities-node')
+		.select('circle')
+		.transition()
+		.attr('r', outerR/10)
+		.style('fill', function(d) { return colorsArray[allIdentityKeys.indexOf(d)]; })
+		.duration(1500);
 
 	svg.selectAll('.members-node')
-		.attr('transform', (d,i) => { return 'translate(' + getMemberPosX() + ', ' + getMemberPosY(i) + ')'})
+		.on('mouseover', eventHandlers.handleMouseOverMember)
+		.on('mouseleave', eventHandlers.resetToDefault.bind(this, colorsArray, allIdentityKeys))
+		.attr('transform', (d) => { return 'translate(' + memberPosLookup[d][0] + ', ' + memberPosLookup[d][1] +')'})
+		.select('.members-node-circle')
+			.transition()
+			.attr('r', outerR/25)
+			.delay(function(d,i) { return 1000 + (300 * i); })
+			.duration(600)
+			//.on('end', appendMemberLabel);
 
-	svg.selectAll('.members-node-circle')
+	updateLinks();
+}
+
+function setActiveIdentities() {
+	let identities = svg.select('.identities')
+		.selectAll('.identities-node')
+		.data(getActiveViewKeys(), (d) => { return d; })
+
+	setIdentityPosLookup();
+
+	identities.exit().remove();
+
+	identities.enter().append('g')
+		.attr('class', 'identities-node')
+		.on('mouseover', eventHandlers.handleMouseOverIdentity)
+		.on('mouseleave', eventHandlers.resetToDefault.bind(this, colorsArray, allIdentityKeys))
+		.attr('data-enter', 'true')		
+		.attr('transform', (d) => { return 'translate(' + identityPosLookup[d][0] + ', ' + identityPosLookup[d][1] + ')'})
+		.append('circle')	
+		.attr('class', 'identities-node-circle')
+		.attr('r', 0)
+		.style('fill', function(d) { return colorsArray[allIdentityKeys.indexOf(d)]; })
+
+	svg.selectAll('.identities-node')
 		.transition()
-		.delay(function(d,i) { return 1000 + (300 * i); })
-		.attr('r', outerR/25)	
-		.duration(1000)
+		.attr('transform', (d) => { return 'translate(' + identityPosLookup[d][0] + ', ' + identityPosLookup[d][1] + ')'})
+		.duration(800)
 
-	svg.selectAll('.members-node-label')
+	svg.selectAll('.identities-node-circle')
 		.transition()
-		.delay(function(d,i) { return 1300 + (300 * i); })
-		.style('opacity', 1)		
-		.duration(400)
+		.attr('r', outerR/10)
+		.duration(600)
+
+	svg.selectAll('.identities-node[data-enter="true"]')
+		.append('text')
+		.style('opacity', 0)
+		.text((d) => { return d; })
+		.call(d3WordWrap)
+
+	svg.selectAll('.identities-node[data-enter="true"] text')
+		.transition()
+		.style('opacity', 1)
+		.duration(600)
+
+	setLinks();
+	updateLinks();
 }
 
-function getVocationPosX() {
-	return outerR/15;
-}
-function getVocationPosY(i) {
-	return ((i/dataParser.getConnectionKeys('vocation').length) * (outerR * 2 - 60) + 30 + 25);
-}
-function getAdvocationPosX() {
-	return (outerR*2 - outerR/15 - 220);
-}
-function getAdvocationPosY(i) {
-	return ((i/dataParser.getConnectionKeys('advocation').length) * (outerR * 2 - 60) + 30 + 25);
-}
-function getMemberPosX() {
-	return outerR;
-}
-function getMemberPosY(i) {
-	return ((i/parsedData.rows.length) * (outerR * 2 - 100) + 100);
+function setIdentityPosLookup() {
+	const connections = dataParser.getConnections(getActiveView());
+	let angle, x, y;
+	const activeViewKeys = getActiveViewKeys();
+	
+	activeViewKeys.forEach((identity, i) => {
+		angle = (i / (activeViewKeys.length/2)) * Math.PI;
+		x = getPositionX(outerR, 0.87, angle);
+		y = getPositionY(outerR, 0.87, angle);
+
+		identityPosLookup[identity] = [x, y];
+	});
 }
 
-function getLinkData(type, vocationAdvocation, idx) {
+function setMemberPosLookup() {
+	let vertices;
+	let pos;
+	
+	dataParser.getMembers().forEach((name, i) => {
+		let angle = (i / (parsedData.rows.length/2)) * Math.PI;
+		pos = [
+			getPositionX(outerR, 0.45, angle),
+			getPositionY(outerR, 0.45, angle)
+		]
+
+		memberPosLookup[name] = pos;
+	})
+}
+
+function setLinks() {
+	let links = svg.select('.links')
+		.selectAll('.links-node')
+		.data(getActiveViewKeys(), (d) => { return d; })
+		.enter()
+		.append('g')
+		.attr('class', 'links-node');
+
+	let linkLines = links.selectAll('links-node-line')
+		.data(getLinkData);
+
+	linkLines.enter()
+		.append('line')
+		.attr('class', 'links-node-line')
+		.style('stroke', (d) => { return colorsArray[allIdentityKeys.indexOf(d.identity)]; })
+		.attr('x1', (d) => { return identityPosLookup[d.identity][0]; })
+		.attr('y1', (d) => { return identityPosLookup[d.identity][1]; })
+		.attr('x2', (d) => { return identityPosLookup[d.identity][0]; })
+		.attr('y2', (d) => { return identityPosLookup[d.identity][1]; });
+}
+
+function updateLinks() {
+	svg.selectAll('.links-node-line')
+		.transition()		
+		.attr('x1', (d) => { return identityPosLookup[d.identity][0]; })
+		.attr('y1', (d) => { return identityPosLookup[d.identity][1]; })
+		.attr('x2', (d) => { return memberPosLookup[d.member][0]; })
+		.attr('y2', (d) => { return memberPosLookup[d.member][1]; })
+		.delay((d) => { return 1000 + (300 * d.index); })
+		.duration(600);
+}
+
+function resetLinks() {
+	svg.selectAll('.links-node-line')
+		.transition()		
+		.attr('x1', function(d) { return (d.start[0] + d.end[0])/2; })
+		.attr('y1', function(d) { return (d.start[1] + d.end[1])/2; })
+		.attr('x2', function(d) { return (d.start[0] + d.end[0])/2; })
+		.attr('y2', function(d) { return (d.start[1] + d.end[1])/2; })
+		.duration(1000);
+
+	setTimeout(() => {			
+		svg.selectAll('.links-node').remove();
+	}, 1000)
+}
+
+function getLinkData(identity) {
 	const members = dataParser.getMembers();
-	const connections = dataParser.getConnections(type)[vocationAdvocation];
+	const identities = dataParser.getConnections(getActiveView())[identity];
 
-	return connections.map((member, i) => {
+	return identities.map((member, i) => {
 		return {
-			end: [getMemberPosX(), getMemberPosY(members.indexOf(member))], 
-			start: type === 'vocation' ?
-				[getVocationPosX(), getVocationPosY(idx)]
-				: [getAdvocationPosX(), getAdvocationPosY(idx)],
-			vocationAdvocation: vocationAdvocation,
+			end: memberPosLookup[member],
+			start: identityPosLookup[identity],
+			identity: identity,
 			member: member,
 			index: members.indexOf(member)
 		}
 	})
 }
 
-function setLinks() {
-	let linksVocation = svg.select('.links')
-		.selectAll('.links-node.links-node-vocation')
-		.data(dataParser.getConnectionKeys('vocation'))
-		.enter()
-		.append('g')
-		.attr('class', 'links-node links-node-vocation');
-
-	linksVocation.selectAll('links-node-line')
-		.data(getLinkData.bind(this, 'vocation'))
-		.enter()
-		.append('line')
-		.attr('class', 'links-node-line')
-		.attr('x1', (d) => { return d.start[0] + 230; })
-		.attr('y1', (d) => { return d.start[1] + 20; })
-		.attr('x2', (d) => { return d.start[0] + 230 })
-		.attr('y2', (d) => { return d.start[1] + 20; });
-
-	let linksAdvocation = svg.select('.links')
-		.selectAll('.links-node.links-node-advocation')
-		.data(dataParser.getConnectionKeys('advocation'))
-		.enter()
-		.append('g')
-		.attr('class', 'links-node links-node-advocation');
-
-	linksAdvocation.selectAll('links-node-line')
-		.data(getLinkData.bind(this, 'advocation'))
-		.enter()
-		.append('line')
-		.attr('class', 'links-node-line')
-		.attr('x1', (d) => { return d.start[0] - 10; })
-		.attr('y1', (d) => { return d.start[1] + 20; })
-		.attr('x2', (d) => { return d.start[0] - 10; })
-		.attr('y2', (d) => { return d.start[1] + 20; });
-
-	svg.selectAll('.links-node-line')
-		.transition()
-		.attr('x2', (d) => { return d.end[0]; })
-		.attr('y2', (d) => { return d.end[1]; })
-		.delay((d) => { return 1000 + (300 * d.index); })
-		.duration(600);
+function getActiveViewKeys() {
+	if (_activeView === 'vocation') {
+		return allVocationKeys;
+	} 
+	return allAdvocationKeys;
 }
 
-export default {init};
+function toggleView() {
+	_activeView =  getActiveView() === 'advocation' ? 'vocation' : 'advocation';
+
+	d3.select(this)	
+		.classed('active', !d3.select(this).classed('active'))
+
+	resetLinks();
+	
+	setTimeout(() => {			
+		setActiveIdentities();
+	}, 1000)
+}
+
+export default {
+	init, 
+	setup, 
+	getActiveView
+}

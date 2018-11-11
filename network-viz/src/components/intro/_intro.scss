@@ -1,0 +1,13 @@
+#intro {
+	.components {
+		text {
+			font-size: 3rem;
+			fill: #fff;
+		}
+	}
+}
+@media only screen and (max-width: 980px) {
+	#intro-svg {
+		margin: -6rem 0;
+	}
+}

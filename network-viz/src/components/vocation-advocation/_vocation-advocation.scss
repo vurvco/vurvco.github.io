@@ -1,20 +1,32 @@
-.vocation-node {
-	rect {
-		fill: #ff713d;
-	}
-}
-.links-node-vocation {
-	line {
-		stroke: #ff713d;
-	}
-}
-.advocation-node {
-	rect {
-		fill: #00bbd5;
-	}
-}
-.links-node-advocation {
-	line {
-		stroke: #00bbd5;
+.vocation-advocation {	
+	&-toggle-view {
+		cursor: pointer;
+		background: $black;
+		position: relative;
+		white-space: nowrap;
+		transition: padding 0.2s;
+		border-bottom: 1px solid;
+		span {
+			display: inline-block;
+			&:first-child {
+				position: absolute;
+				left: 0;
+				z-index: 0;
+			}
+			&:last-child {
+				background: $black;
+				position: relative;
+				z-index: 1;
+			}
+		}
+		&.active {
+			padding-left: 1.875rem;
+			@media only screen and (max-width: 980px) {
+				padding-left: 1.25rem;
+			}
+		}
+		&:hover span {
+			background: blue;
+		}
 	}
 }

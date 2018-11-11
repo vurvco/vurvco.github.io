@@ -99,13 +99,12 @@ function update() {
 }
 
 function setIdentityPosLookup() {
-	const connections = dataParser.getConnections('define-yourself');
 	let angle, x, y;
 	
 	allIdentityKeys.forEach((identity, i) => {
 		angle = (i / (allIdentityKeys.length/2)) * Math.PI;
-		x = getPositionX(outerR, 0.8, angle);
-		y = getPositionY(outerR, 0.8, angle);
+		x = getPositionX(outerR, 0.87, angle);
+		y = getPositionY(outerR, 0.87, angle);
 
 		identityPosLookup[identity] = [x, y];
 	});

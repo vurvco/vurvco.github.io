@@ -1,0 +1,30 @@
+.name-cards {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+	margin: 8rem auto;
+	height: auto;
+}
+.name-card {
+	background: #fff;
+	color: $black;
+	display: inline-block;
+	width: 20rem;
+	margin: 1.5rem;
+	padding: 1.5rem;
+	position: relative;
+	h3 {
+		width: calc(100% - 2.5rem);
+	}
+	&-websites {
+		font-size: 0.8rem;
+	}
+	&-identifier {
+		height: 3rem;
+		width: 3rem;
+		position: absolute;
+		right: 1rem;
+		top: 1.5rem;
+	}
+}

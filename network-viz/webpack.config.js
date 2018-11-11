@@ -13,6 +13,7 @@ const webpackConfig = {
         index: './src/index.js'
     },
     output: {
+        //filename: './dist/scripts/[name].[hash:7].min.js'
         filename: './dist/scripts/[name].min.js'
     },
     devtool: getDevTool(),
