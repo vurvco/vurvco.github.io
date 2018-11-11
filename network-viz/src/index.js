@@ -13,7 +13,7 @@ let isInitialized = {
 	'intro': false
 }
 
-d3.csv('./../data/survey.csv').then((data) => {
+d3.csv('./../dist/data/survey.csv').then((data) => {
 	dataParser.setParsedData(data);
 
 	initializeSections();
