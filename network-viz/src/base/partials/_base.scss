@@ -45,6 +45,7 @@
 	}
 	&-svg-container {
 		flex: 1 1 auto;
+		align-self: center;
 	}
 }
 @media only screen and (max-width: 980px) {
@@ -54,6 +55,9 @@
 		&-desc {
 			flex: 1 1 9rem;
 			align-items: flex-end;
+		}
+		&-container {
+			align-self: auto;
 		}
 	}
 	h2 {
