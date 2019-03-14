@@ -73,7 +73,7 @@ function update() {
 	svg.selectAll('.identities-node')
 		.select('circle')
 		.transition()
-		.attr('r', outerR/10)
+		.attr('r', outerR/12)
 		.style('fill', function(d, i) { return colorsArray[i]; })
 		.duration(1500);
 

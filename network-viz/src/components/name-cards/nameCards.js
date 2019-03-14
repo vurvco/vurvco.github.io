@@ -26,8 +26,8 @@ function setHtml() {
 	let html = '';
 	people.forEach((person) => {
 		html += 
-		'<div class="name-card">'
-			+ '<svg class="name-card-identifier" data-person="' + person.Name + '"></svg>'
+		'<div class="name-cards-item">'
+			+ '<svg class="name-cards-item-identifier" data-person="' + person.Name + '"></svg>'
 			+ '<h3>'
 				+ person.Name + (person['alias'] ? ' • ' + person['alias'] : '')
 			+ '</h3>'
@@ -45,12 +45,12 @@ function setIdentifier(name) {
 	const svg = d3.select('#name-cards svg[data-person="' + name + '"]');
 	const personIdentities = parsedData.survey[name]['define-yourself'];
 
-	svg.selectAll('.name-card-identity-node')
+	svg.selectAll('.name-cards-item-identity-node')
 		.data([personIdentities])
 		.enter().append('g')
-		.attr('class', 'name-card-identity-node')		
+		.attr('class', 'name-cards-item-identity-node')		
 
-	svg.selectAll('.name-card-identity-node')
+	svg.selectAll('.name-cards-item-identity-node')
 		.append('polygon')
 		.attr("points",function(d) { 
 			let points = d.map(function(d) {
@@ -70,7 +70,7 @@ function getHtmlWebsites(person) {
 	let html = '';
 
 	if (websites.length > 0) {
-		html += '<ul class="name-card-websites">'
+		html += '<ul class="name-cards-item-websites">'
 		websites.forEach((website) => {
 			html += '<li><a href="http://' 
 				+ website 

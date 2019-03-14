@@ -72,7 +72,6 @@ function highlightIdentity (identity) {
 function highlightLinks (member, identity) {	
 	svg.selectAll('.links-node-line')
 		.filter((d) => { 
-			console.log(d)
 			return (
 				(member ? d.member !== member : true) &&
 				(identity ? d.identity !== identity : true)
