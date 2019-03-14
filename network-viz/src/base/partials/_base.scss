@@ -39,10 +39,9 @@
 		flex-direction: row-reverse;
 	} 
 	&-desc {
-		display: flex;
-		align-items: center;
 		flex: 0 0 35%;
 		padding: 1rem;
+		align-self: center;
 	}
 	&-svg-container {
 		flex: 1 1 auto;
@@ -53,7 +52,8 @@
 		flex-direction: column !important; 
 		height: auto;
 		&-desc {
-			flex: 1 1 auto;
+			flex: 1 1 9rem;
+			align-items: flex-end;
 		}
 	}
 	h2 {
