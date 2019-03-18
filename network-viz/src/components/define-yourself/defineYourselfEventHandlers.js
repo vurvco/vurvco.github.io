@@ -20,7 +20,7 @@ export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
 		.style('fill', '')
 
 	svg.selectAll('.members-node-label')
-		.style('opacity', 0)
+		.style('display', 'none')
 }
 
 export function handleMouseOverIdentity(d, i) {
@@ -33,7 +33,7 @@ export function handleMouseOverIdentity(d, i) {
 
 	svg.selectAll('.members-node-label')
 		.filter((d) => { return parsedData.survey[d]['define-yourself'].indexOf(identity) > -1; })
-		.style('opacity', 1)
+		.style('display', 'inline')
 
 	highlightLinks(false, identity);
 	highlightIdentity(identity);
@@ -56,8 +56,8 @@ function highlightMember(member) {
 		.style('fill', inactive)
 
 	svg.selectAll('.members-node-label')
-		.filter((d) => { return d === member; })
-		.style('opacity', 1)
+		.filter((d) => { return d === member; })		
+		.style('display', 'inline')
 }
 
 function highlightIdentity (identity) {

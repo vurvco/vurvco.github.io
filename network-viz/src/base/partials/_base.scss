@@ -3,14 +3,14 @@
 		fill: #fff;
 		cursor: pointer;
 		&-label {
-			opacity: 0;
-			transition: opacity 0.2s;
+			display: none;
+			//transition: opacity 0.2s;
 			rect {
 				fill: #fff;
 			}
 		}
 		&-label, &-initials {	
-			transform: translate(0, 0.25rem);		
+			transform: translate(0, 0.35rem);		
 			text {
 				fill: $black;
 				font-size: 1.2rem;
@@ -31,10 +31,10 @@
 	}
 }
 .section {
-	height: 100vh;
 	position: relative;
 	display: flex;
 	flex-direction: row;
+	min-height: 90vh;
 	&:nth-child(2n) {
 		flex-direction: row-reverse;
 	} 
@@ -54,9 +54,12 @@
 		height: auto;
 		&-desc {
 			flex: 1 1 9rem;
+			display: flex;
+			align-self: auto;
+			justify-content: center;
 			align-items: flex-end;
 		}
-		&-container {
+		&-svg-container {
 			align-self: auto;
 		}
 	}

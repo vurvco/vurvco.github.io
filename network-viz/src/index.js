@@ -5,12 +5,14 @@ import {dataParser} from 'utility/dataParser';
 import defineYourself from 'components/define-yourself/defineYourself';
 import vocationAdvocation from 'components/vocation-advocation/vocationAdvocation';
 import intro from 'components/intro/intro';
+import vurvCollab from 'components/vurv-collab/vurvCollab';
 import nameCards from 'components/name-cards/nameCards';
 
 let isInitialized = {
 	'define-yourself': false,
 	'vocation-advocation': false,
-	'intro': false
+	'intro': false,
+	'vurv-collab': false
 }
 
 d3.csv('./dist/data/survey.csv').then((data) => {
@@ -21,6 +23,7 @@ d3.csv('./dist/data/survey.csv').then((data) => {
 	intro.setup();
 	defineYourself.setup();
 	vocationAdvocation.setup();
+	vurvCollab.setup();
 
 	nameCards.init();
 
@@ -44,6 +47,9 @@ function initializeSections() {
 						break;
 					case 'intro':
 						intro.init();
+						break;
+					case 'vurv-collab':
+						vurvCollab.init();
 						break;
 					default:
 						break;
