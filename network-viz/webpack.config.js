@@ -3,17 +3,19 @@ const Path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const Webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 function getDevTool() {
     return 'source-map';
 }
 
 const webpackConfig = {
-    entry: {
-        index: './src/index.js'
-    },
+    entry: [
+        './src/index.js', 
+        './src/main.scss'
+    ],
     output: {
-        filename: './dist/scripts/[name].[hash:7].min.js'
+        filename: './dist/build/index.[hash:7].js'
     },
     devtool: getDevTool(),
     module: {
@@ -26,7 +28,7 @@ const webpackConfig = {
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
-                loaders: ['style-loader', 'css-loader', 'sass-loader']
+                loader: ExtractTextPlugin.extract(['css-loader', 'sass-loader'])
             },
             {
                 test: /\.csv$/,
@@ -41,16 +43,19 @@ const webpackConfig = {
     },
     plugins: [  
         new Webpack.HotModuleReplacementPlugin(),
+        new CleanWebpackPlugin(['./dist/build/']),
         new HtmlWebpackPlugin({
-            template: './src/index.html'
-        }),  
+            template: './src/index.html',
+            filename: './index.html'
+        }), 
         new Webpack.DefinePlugin({
           'process.env': {
             NODE_ENV: 'development',
           },
         }),
-        new ExtractTextPlugin('./dist/styles/main.css', {
-            allChunks: true
+         new ExtractTextPlugin({
+            filename: 'dist/build/[name].[hash:7].css',
+            allChunks: true,
         }),
         new CopyWebpackPlugin([
             {from:'./src/data',to:'./dist/data'} 

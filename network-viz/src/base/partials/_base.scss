@@ -3,14 +3,14 @@
 		fill: #fff;
 		cursor: pointer;
 		&-label {
-			opacity: 0;
-			transition: opacity 0.2s;
+			display: none;
+			//transition: opacity 0.2s;
 			rect {
 				fill: #fff;
 			}
 		}
 		&-label, &-initials {	
-			transform: translate(0, 0.25rem);		
+			transform: translate(0, 0.35rem);		
 			text {
 				fill: $black;
 				font-size: 1.2rem;
@@ -31,21 +31,21 @@
 	}
 }
 .section {
-	height: 100vh;
 	position: relative;
 	display: flex;
 	flex-direction: row;
+	min-height: 90vh;
 	&:nth-child(2n) {
 		flex-direction: row-reverse;
 	} 
 	&-desc {
-		display: flex;
-		align-items: center;
 		flex: 0 0 35%;
 		padding: 1rem;
+		align-self: center;
 	}
 	&-svg-container {
 		flex: 1 1 auto;
+		align-self: center;
 	}
 }
 @media only screen and (max-width: 980px) {
@@ -53,7 +53,14 @@
 		flex-direction: column !important; 
 		height: auto;
 		&-desc {
-			flex: 1 1 auto;
+			flex: 1 1 9rem;
+			display: flex;
+			align-self: auto;
+			justify-content: center;
+			align-items: flex-end;
+		}
+		&-svg-container {
+			align-self: auto;
 		}
 	}
 	h2 {

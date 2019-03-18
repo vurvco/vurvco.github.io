@@ -17,11 +17,8 @@ export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
 	svg.selectAll('.identities-node-circle')
 		.style('fill', (d) => { return colorsArray[allIdentityKeys.indexOf(d)]; })
 
-	svg.selectAll('.members-node-circle')
-		.style('fill', '')
-
 	svg.selectAll('.members-node-label')
-		.style('opacity', 0)
+		.style('display', 'none')
 }
 
 export function handleMouseOverIdentity(d, i) {
@@ -35,7 +32,7 @@ export function handleMouseOverIdentity(d, i) {
 
 	svg.selectAll('.members-node-label')
 		.filter((d) => { return parsedData.survey[d][active].indexOf(identity) > -1; })
-		.style('opacity', 1)
+		.style('display', 'inline')
 
 	highlightLinks(false, identity);
 	highlightIdentity(identity);
@@ -60,7 +57,7 @@ function highlightMember(member) {
 
 	svg.selectAll('.members-node-label')
 		.filter((d) => { return d === member; })
-		.style('opacity', 1)
+		.style('display', 'inline')
 }
 
 function highlightIdentity (identity) {

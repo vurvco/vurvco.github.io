@@ -6,11 +6,11 @@ export const outerR = 650;
 
 const viewBox = Math.min(window.innerWidth, window.innerHeight);
 
-export function baseInit(selector) {
+export function baseInit(selector, initMembers = true, height = outerR*2) {
 	const svg = d3.select(selector);
 
 	svg.attr("preserveAspectRatio", "xMinYMin meet")
-		.attr('viewBox', '0 0 ' + outerR*2 + ' ' + outerR*2)
+		.attr('viewBox', '0 0 ' + outerR*2 + ' ' + height)
 		.append('g')
 		.attr('class', 'links');
 
@@ -20,7 +20,9 @@ export function baseInit(selector) {
 	svg.append('g')
 		.attr('class', 'identities');
 
-	setMembers(selector);
+	if (initMembers) {
+		setMembers(selector);
+	}
 }
 
 function setMembers(selector) {
@@ -38,8 +40,9 @@ function setMembers(selector) {
 		.each(appendMemberLabel);
 }
 
-function appendMemberLabel(d, i) {
+export function appendMemberLabel(d, i) {
 	const member = d3.select(this.parentNode);
+	const memberName = d.member ? d.member : d;
 	let bbox;
 
 	member.append('g')
@@ -47,7 +50,7 @@ function appendMemberLabel(d, i) {
 		.append('text')
 		.text((d) => { 
 			let initials = '';
-			d.split(' ').forEach((str) => {
+			memberName.split(' ').forEach((str) => {
 				initials += str.substring(0,1);
 			});
 
@@ -60,7 +63,7 @@ function appendMemberLabel(d, i) {
 
 	const text = member.select('.members-node-label')
 		.append('text')
-		.text(d);
+		.text(memberName);
 
 	bbox = text.node().getBBox();
 
@@ -71,4 +74,8 @@ function appendMemberLabel(d, i) {
 		.attr('y', bbox.y - 5)
 }
 
-export default {outerR, baseInit};
+export default {
+	outerR, 
+	baseInit,
+	appendMemberLabel
+};
