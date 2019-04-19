@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
 
 import {parsedData} from './../../utility/dataParser';
-import {getActiveView} from './vocationAdvocation';
+import {getActiveView} from './vocationAvocation';
 
 const inactive = 'rgb(80,80,80)';
-const svg = d3.select('#vocation-advocation-svg');
+const svg = d3.select('#vocation-avocation-svg');
 
 export function resetToDefault(colorsArray, allIdentityKeys, d, i) {
 	svg.selectAll('.links-node-line')

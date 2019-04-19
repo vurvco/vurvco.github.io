@@ -8,7 +8,7 @@ export const connectionKeys = [
 	"vurv-collaboration",
 	"non-vurv-projects",
 	"non-vurv-collaboration",
-	"advocation",
+	"avocation",
 	"collaborators-wanted"
 ];
 
@@ -23,7 +23,7 @@ export const dataParser = {
 		let survey = {};
 		data.forEach((d) => {
 			connectionKeys.forEach((key) => {
-				if (['define-yourself', 'vocation', 'advocation', 'collaborators-wanted'].indexOf(key) > -1) {
+				if (['define-yourself', 'vocation', 'avocation', 'collaborators-wanted'].indexOf(key) > -1) {
 					d[key] = d[key].toLowerCase();
 				}
 				d[key] = d[key].replace(/;/g, ', ').split(', ');

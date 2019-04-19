@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 
-import * as eventHandlers from './vocationAdvocationEventHandlers';
+import * as eventHandlers from './vocationAvocationEventHandlers';
 
 import {parsedData, dataParser} from 'utility/dataParser';
 import {getColorArray} from 'utility/getColorArray';
@@ -8,14 +8,14 @@ import {d3WordWrap} from 'utility/d3WordWrap';
 import {getPositionX, getPositionY} from 'utility/getPosition';
 import {outerR, baseInit} from 'base/base';
 
-const svg = d3.select('#vocation-advocation-svg');
+const svg = d3.select('#vocation-avocation-svg');
 
 let identityPosLookup = {};
 let memberPosLookup = {};
 
 let allIdentityKeys = [];
 let allVocationKeys = [];
-let allAdvocationKeys = [];
+let allAvocationKeys = [];
 let colorsArray = [];
 
 let _activeView = 'vocation';
@@ -25,12 +25,12 @@ export function getActiveView() {
 }
 
 export function setup() {
-	baseInit('#vocation-advocation-svg');
+	baseInit('#vocation-avocation-svg');
 	allVocationKeys = dataParser.getConnectionKeys('vocation').sort().reverse();
-	allAdvocationKeys = dataParser.getConnectionKeys('advocation').sort().reverse();
+	allAvocationKeys = dataParser.getConnectionKeys('avocation').sort().reverse();
 
 	allIdentityKeys = allVocationKeys.slice();
-	allAdvocationKeys.forEach((el,i) => {
+	allAvocationKeys.forEach((el,i) => {
 		if (allIdentityKeys.indexOf(el) === -1) {
 			allIdentityKeys.push(el);
 		}
@@ -64,7 +64,7 @@ export function init() {
 		update();
 	}, 100)
 
-	d3.select('.vocation-advocation-toggle-view')
+	d3.select('.vocation-avocation-toggle-view')
 		.on('click', toggleView)
 }
 
@@ -251,11 +251,11 @@ function getActiveViewKeys() {
 	if (_activeView === 'vocation') {
 		return allVocationKeys;
 	} 
-	return allAdvocationKeys;
+	return allAvocationKeys;
 }
 
 function toggleView() {
-	_activeView =  getActiveView() === 'advocation' ? 'vocation' : 'advocation';
+	_activeView =  getActiveView() === 'avocation' ? 'vocation' : 'avocation';
 
 	d3.select(this)	
 		.classed('active', !d3.select(this).classed('active'))
