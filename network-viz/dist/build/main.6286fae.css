@@ -102,7 +102,9 @@ ul, li {
     .section-svg-container {
       align-self: auto; }
   h2 {
-    font-size: 1rem; } }
+    font-size: 1rem;
+    width: 100%;
+    text-align: center; } }
 
 #intro .components text {
   font-size: 3rem;
@@ -139,27 +141,27 @@ ul, li {
       right: 1rem;
       top: 1.5rem; }
 
-.vocation-advocation-toggle-view {
+.vocation-avocation-toggle-view {
   cursor: pointer;
   background: #272727;
   position: relative;
   white-space: nowrap;
   transition: padding 0.2s;
   border-bottom: 1px solid; }
-  .vocation-advocation-toggle-view span {
+  .vocation-avocation-toggle-view span {
     display: inline-block; }
-    .vocation-advocation-toggle-view span:first-child {
+    .vocation-avocation-toggle-view span:first-child {
       position: absolute;
       left: 0;
       z-index: 0; }
-    .vocation-advocation-toggle-view span:last-child {
+    .vocation-avocation-toggle-view span:last-child {
       background: #272727;
       position: relative;
       z-index: 1; }
-  .vocation-advocation-toggle-view.active {
-    padding-left: 1.875rem; }
+  .vocation-avocation-toggle-view.active {
+    padding-left: 0.875rem; }
     @media only screen and (max-width: 980px) {
-      .vocation-advocation-toggle-view.active {
-        padding-left: 1.25rem; } }
-  .vocation-advocation-toggle-view:hover span {
+      .vocation-avocation-toggle-view.active {
+        padding-left: 0.625rem; } }
+  .vocation-avocation-toggle-view:hover span {
     background: blue; }
