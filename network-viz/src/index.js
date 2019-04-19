@@ -32,7 +32,7 @@ d3.csv('./dist/data/survey.csv').then((data) => {
 	});
 })
 
-function initializeSections() {	
+function initializeSections() {
 	Object.keys(isInitialized).forEach((section) => {
 		if (!isInitialized[section]) {
 			if (isInViewport(document.getElementById(section))) {
@@ -59,10 +59,27 @@ function initializeSections() {
 	})
 }
 
+let trigger = 0;
+setScrollTriggerPoints();
+window.addEventListener('resize', () => {
+	setScrollTriggerPoints();
+});
+
+// Create an imaginary line at a fixed percent of the screen
+// for use when triggering animations
+function setScrollTriggerPoints() {
+	const viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+	const triggerScreenPercent = 0.33;
+	trigger = Math.floor(viewportHeight * triggerScreenPercent);
+}
+
+// If visualization's top is above the trigger line
+// and visualization's bottom is below the trigger line
+// visualization is "in view" - trigger animation
 function isInViewport (elem) {
 	const bounding = elem.getBoundingClientRect();
 	return (
-		bounding.top >= 0 &&
-		bounding.bottom <= (window.innerHeight+25 || document.documentElement.clientHeight+25)
+		bounding.top <= trigger &&
+		bounding.bottom >= trigger
 	);
 }
