@@ -15,7 +15,7 @@ let isInitialized = {
 	'vurv-collab': false
 }
 
-d3.csv('./dist/data/survey.csv').then((data) => {
+d3.csv('./dist/data/survey.6286fae.csv').then((data) => {
 	dataParser.setParsedData(data);
 
 	initializeSections();
