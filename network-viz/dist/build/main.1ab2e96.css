@@ -54,10 +54,8 @@ ul, li {
 .members-node {
   fill: #fff;
   cursor: pointer; }
-  .members-node-label {
-    display: none; }
-    .members-node-label rect {
-      fill: #fff; }
+  .members-node-label rect {
+    fill: #fff; }
   .members-node-label, .members-node-initials {
     transform: translate(0, 0.35rem); }
     .members-node-label text, .members-node-initials text {

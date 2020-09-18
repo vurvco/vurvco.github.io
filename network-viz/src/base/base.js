@@ -57,9 +57,10 @@ export function appendMemberLabel(d, i) {
 			return initials;
 		})
 
-	member.append('g')
+	const label = member.append('g')
 		.attr('class', 'members-node-label')
-		.append('rect');
+	
+	label.append('rect');
 
 	const text = member.select('.members-node-label')
 		.append('text')
@@ -72,6 +73,8 @@ export function appendMemberLabel(d, i) {
 		.attr('height', bbox.height + 10)
 		.attr('x', bbox.x - 20)
 		.attr('y', bbox.y - 5)
+
+	label.style('display', 'none')
 }
 
 export default {
